@@ -8,7 +8,7 @@ if [ ! -d "$CONFIG_DIR" ]; then
     mkdir -p "$CONFIG_DIR"
 fi
 
-for package_dir in "$DOTFILES_DIR/packages/*"; do
+for package_dir in "$DOTFILES_DIR/packages"/*; do
     if [ -d "$package_dir" ]; then
         package_name=$(basename "$package_dir")
         echo "Stowing $package_name..."
