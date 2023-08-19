@@ -9,9 +9,7 @@ if [ ! -d "$CONFIG_DIR" ]; then
 fi
 
 for package_dir in "$DOTFILES_DIR/packages"/*; do
-    if [ -d "$package_dir" ]; then
-        package_name=$(basename "$package_dir")
-        echo "Stowing $package_name..."
-        stow -v -d "$DOTFILES_DIR/packages" -t ~ "$package_name"
-    fi
+    package_name=$(basename "$package_dir")
+    echo "Stowing $package_name..."
+    stow -v -d "$DOTFILES_DIR/packages" -t ~ "$package_name"
 done
