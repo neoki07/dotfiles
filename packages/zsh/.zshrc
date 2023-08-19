@@ -21,8 +21,10 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 source "${ZINIT_HOME}/zinit.zsh"
 
 zinit wait lucid light-mode for \
-    marlonrichert/zsh-autocomplete \
-    zdharma-continuum/fast-syntax-highlighting
+    zsh-users/zsh-autosuggestions \
+    zsh-users/zsh-completions \
+    zdharma-continuum/fast-syntax-highlighting \
+    b4b4r07/enhancd
 
 # Setup other tools
 eval "$(starship init zsh)"
