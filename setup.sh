@@ -1,9 +1,9 @@
-#!/bin/zsh
+#!/bin/bash
 set -e
 
 # Set dotfiles directory environment variable
 export DOTFILES_DIR
-DOTFILES_DIR="$( cd "$( dirname "$0" )" && pwd )"
+DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Install Homebrew
 if ! command -v brew &> /dev/null
