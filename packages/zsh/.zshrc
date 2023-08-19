@@ -23,3 +23,6 @@ source "${ZINIT_HOME}/zinit.zsh"
 zinit wait lucid light-mode for \
     marlonrichert/zsh-autocomplete \
     zdharma-continuum/fast-syntax-highlighting
+
+# Setup other tools
+eval "$(starship init zsh)"
