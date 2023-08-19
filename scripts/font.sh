@@ -2,13 +2,13 @@
 
 # Install JetBrains Mono font
 FONT_URL="https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip"
+DESTINATION_PATH="/tmp/jetbrainsmono.zip"
+UNZIP_PATH="/tmp/jetbrainsmono"
 
 echo "Downloading JetBrains Mono font..."
-DESTINATION_PATH="/tmp/jetbrainsmono.zip"
-curl -o "$DESTINATION_PATH" "$FONT_URL"
+curl --silent -o "$DESTINATION_PATH" -L "$FONT_URL"
 
 echo "Unzipping JetBrains Mono font..."
-UNZIP_PATH="/tmp/jetbrainsmono"
 unzip -o "$DESTINATION_PATH" -d "$UNZIP_PATH"
 
 echo "Installing JetBrains Mono font..."
