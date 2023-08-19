@@ -4,8 +4,12 @@ brew "neovim"
 brew "starship"
 brew "stow"
 
+cask "1password"
+cask "brave-browser"
 cask "brewlet"
+cask "min"
 cask "orbstack"
+cask "raycast"
 cask "tableplus"
 cask "warp"
 
