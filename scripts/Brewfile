@@ -2,6 +2,7 @@ brew "asdf"
 brew "git"
 brew "neovim"
 brew "starship"
+brew "stow"
 
 cask "brewlet"
 cask "orbstack"
