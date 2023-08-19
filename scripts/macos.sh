@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Setting macOS preferences..."
+
 # Trackpad settings
 defaults write -g com.apple.trackpad.scaling 3
 

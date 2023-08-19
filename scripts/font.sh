@@ -9,7 +9,7 @@ echo "Downloading JetBrains Mono font..."
 curl --silent -o "$DESTINATION_PATH" -L "$FONT_URL"
 
 echo "Unzipping JetBrains Mono font..."
-unzip -o "$DESTINATION_PATH" -d "$UNZIP_PATH"
+unzip -q -o "$DESTINATION_PATH" -d "$UNZIP_PATH"
 
 echo "Installing JetBrains Mono font..."
 cp "$UNZIP_PATH/fonts/variable/JetBrainsMono[wght].ttf" ~/Library/Fonts/
