@@ -28,3 +28,5 @@ zinit wait lucid light-mode for \
 
 # Setup other tools
 eval "$(starship init zsh)"
+
+source $(brew --prefix asdf)/libexec/asdf.sh
