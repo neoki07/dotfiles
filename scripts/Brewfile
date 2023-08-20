@@ -1,7 +1,10 @@
 brew "asdf"
 brew "fzf"
 brew "git"
+brew "go"
+brew "golang-migrate"
 brew "neovim"
+brew "sqlc"
 brew "starship"
 brew "stow"
 
