@@ -13,6 +13,7 @@
 !/scripts/Brewfile
 !/scripts/font.sh
 !/scripts/macos.sh
+!/scripts/rust.sh
 !/scripts/symlink.sh
 !/scripts/vscode.sh
 
