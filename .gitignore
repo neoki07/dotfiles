@@ -18,4 +18,5 @@
 !/scripts/symlink.sh
 !/scripts/vscode.sh
 
+!README.md
 !.gitignore

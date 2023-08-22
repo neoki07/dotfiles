@@ -1,0 +1,37 @@
+# dotfiles
+
+- General settings for macOS
+  - Speed up trackpad scaling
+  - Speed up mouse scaling
+  - Speed up scroll wheel scaling
+  - Speed up keyboard repeat
+  - Speed up initial key repeat
+  - Enable function keys
+  - Show scroll bars when scrolling
+  - Swap caps lock and control
+- Install tools with Homebrew
+  - asdf
+  - git
+  - Neovim
+  - Starship
+  - 1Password
+  - Brave
+  - Raycast
+  - Visual Studio Code
+  - etc.
+- Install programming languages and related tools
+  - Node.js
+  - pnpm
+  - Go
+  - Rust
+- Set up zsh
+  - Install zsh plugins
+    - zsh-autosuggestions
+    - zsh-completions
+    - fast-syntax-highlighting
+    - enhancd
+- Setup Neovim
+  - Change keymaps
+  - Install plugins
+    - vim-surrond
+    - CamelCaseMotion
