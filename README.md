@@ -1,5 +1,9 @@
 # dotfiles
 
+There are my dotfiles for macOS.
+
+## Package overview
+
 - General settings for macOS
   - Speed up trackpad scaling
   - Speed up mouse scaling
@@ -35,3 +39,21 @@
   - Install plugins
     - vim-surrond
     - CamelCaseMotion
+
+## Installation
+
+### 1. Prepare
+
+Install Xcode Command Line Tools.
+
+```sh
+xcode-select --install
+```
+
+### 2. Clone this repository and run setup script
+
+```sh
+git clone git@github.com:ot07/dotfiles.git
+cd dotfiles
+sh setup.sh
+```
