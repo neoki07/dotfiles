@@ -13,3 +13,5 @@ for package_dir in "$DOTFILES_DIR/packages"/*; do
     echo "Stowing $package_name..."
     stow -v -d "$DOTFILES_DIR/packages" -t ~ "$package_name"
 done
+
+source ~/.zshrc
