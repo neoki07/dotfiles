@@ -7,6 +7,7 @@ brew "neovim"
 brew "sqlc"
 brew "starship"
 brew "stow"
+brew "wasm-pack"
 
 cask "1password"
 cask "brave-browser"
