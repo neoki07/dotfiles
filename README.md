@@ -53,7 +53,7 @@ xcode-select --install
 ### 2. Clone this repository and run setup script
 
 ```sh
-git clone git@github.com:ot07/dotfiles.git
+git clone https://github.com/ot07/dotfiles.git
 cd dotfiles
 sh setup.sh
 ```
