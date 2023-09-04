@@ -14,6 +14,7 @@ if ! command -v rustc &> /dev/null
 then
     echo "Installing Rust..."
     rustup install stable
+    rustup install nightly
 else
     echo "Rust is already installed"
 fi
