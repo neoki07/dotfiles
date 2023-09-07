@@ -2,6 +2,7 @@
 !*/
 
 !/setup.sh
+!/packages/ideavim/.ideavimrc
 !/packages/neovim/.config/nvim/init.lua
 !/packages/neovim/.config/nvim/lua/keymaps.lua
 !/packages/neovim/.config/nvim/lua/options.lua

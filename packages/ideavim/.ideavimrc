@@ -1,0 +1,37 @@
+set shell=/bin/zsh
+set shiftwidth=4
+set tabstop=4
+set expandtab
+set textwidth=0
+set autoindent
+set hlsearch
+set clipboard=unnamed
+set number
+set scrolloff=5
+set incsearch
+set visualbell
+set noerrorbells
+
+syntax enable
+
+noremap H ^
+noremap J 20j
+noremap K 20k
+noremap L $
+noremap <C-j> J
+
+nnoremap x "_x
+nnoremap s "_s
+nnoremap <CR> A<CR><Esc>
+nnoremap <Space> i<Space><Esc>l
+
+inoremap <C-f> <Right>
+inoremap <C-b> <Left>
+inoremap <C-a> <C-o>I
+inoremap <C-e> <C-o>A
+inoremap <C-n> <C-o>j
+inoremap <C-p> <C-o>k
+inoremap <C-d> <Del>
+
+map Q gq
+
