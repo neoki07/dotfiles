@@ -30,3 +30,8 @@ zinit wait lucid light-mode for \
 eval "$(starship init zsh)"
 
 source $(brew --prefix asdf)/libexec/asdf.sh
+
+export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
