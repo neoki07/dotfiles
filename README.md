@@ -37,7 +37,7 @@ There are my dotfiles for macOS.
 - Setup Neovim
   - Change keymaps
   - Install plugins
-    - vim-surrond
+    - vim-surround
     - CamelCaseMotion
 
 ## Installation
