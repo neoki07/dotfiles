@@ -14,8 +14,8 @@ There are my dotfiles for macOS.
   - Show scroll bars when scrolling
   - Swap caps lock and control
 - Install tools with Homebrew
-  - asdf
   - git
+  - mise
   - Neovim
   - Starship
   - 1Password

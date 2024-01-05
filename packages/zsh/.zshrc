@@ -29,7 +29,7 @@ zinit wait lucid light-mode for \
 # Setup other tools
 eval "$(starship init zsh)"
 
-source $(brew --prefix asdf)/libexec/asdf.sh
+eval "$(mise activate zsh)"
 
 export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 

@@ -9,11 +9,11 @@
 !/packages/neovim/.config/nvim/lua/plugins.lua
 !/packages/zsh/.zprofile
 !/packages/zsh/.zshrc
-!/scripts/asdf.sh
 !/scripts/brew.sh
 !/scripts/Brewfile
 !/scripts/font.sh
 !/scripts/macos.sh
+!/scripts/mise.sh
 !/scripts/npm.sh
 !/scripts/rust.sh
 !/scripts/symlink.sh
