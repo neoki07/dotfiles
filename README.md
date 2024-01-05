@@ -19,13 +19,13 @@ There are my dotfiles for macOS.
   - Neovim
   - Starship
   - 1Password
-  - Brave
   - Raycast
   - Visual Studio Code
   - etc.
 - Install programming languages and related tools
   - Node.js
   - pnpm
+  - Bun
   - Go
   - Rust
 - Set up zsh
