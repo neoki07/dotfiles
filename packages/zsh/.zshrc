@@ -35,3 +35,7 @@ export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
+
+if [ -f ~/.ssh/.ssh-agent ]; then
+    source ~/.ssh/.ssh-agent
+fi
