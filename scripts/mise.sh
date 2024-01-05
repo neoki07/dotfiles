@@ -12,3 +12,8 @@ if ! mise plugin ls | grep -q 'pnpm'; then
 fi
 mise install pnpm@latest
 mise global pnpm@latest
+
+# Install Bun
+echo "Installing Bun with mise..."
+mise install bun@latest
+mise global bun@latest

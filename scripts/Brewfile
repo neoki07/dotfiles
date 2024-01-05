@@ -26,6 +26,3 @@ cask "warp"
 
 tap "homebrew/cask-versions"
 cask "visual-studio-code-insiders"
-
-tap "oven-sh/bun"
-brew "bun"
