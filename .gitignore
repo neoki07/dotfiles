@@ -15,6 +15,7 @@
 !/scripts/macos.sh
 !/scripts/mise.sh
 !/scripts/npm.sh
+!/scripts/reboot.sh
 !/scripts/rust.sh
 !/scripts/symlink.sh
 !/scripts/vscode.sh
