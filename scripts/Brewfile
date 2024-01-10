@@ -1,6 +1,5 @@
 brew "fzf"
 brew "git"
-brew "go"
 brew "golang-migrate"
 brew "mise"
 brew "neovim"

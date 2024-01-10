@@ -17,3 +17,8 @@ mise global pnpm@latest
 echo "Installing Bun with mise..."
 mise install bun@latest
 mise global bun@latest
+
+# Install Go
+echo "Installing Go with mise..."
+mise install go@latest
+mise global go@latest
