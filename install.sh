@@ -448,10 +448,6 @@ DOTFILES_PARENT_DIR=$HOME
 text_prompt DOTFILES_PARENT_DIR "$HOME (\$HOME)" "$HOME"
 printf "\n"
 
-print_question "Whether to reboot the system after installation?"
-yes_no_prompt SHOULD_REBOOT
-printf "\n"
-
 print_question "Which brew packages do you want to install?"
 BREW_PACKAGES=()
 multiselect_prompt BREW_PACKAGES "fzf;git;golang-migrate;mise;neovim;sqlc;starship;wasm-pack" true
@@ -460,6 +456,10 @@ printf "\n"
 print_question "Which brew applications do you want to install?"
 BREW_CASKS=()
 multiselect_prompt BREW_CASKS "1password;arc;brave-browser;brewlet;discord;figma;jetbrains-toolbox;min;notion;obsidian;orbstack;raycast;slack;spotify;tableplus;visual-studio-code;warp" true
+printf "\n"
+
+print_question "Whether to reboot the system after installation?"
+yes_no_prompt SHOULD_REBOOT
 printf "\n"
 
 if ! command -v brew &>/dev/null; then
@@ -489,7 +489,7 @@ fi
 
 DOTFILES_DIR="$DOTFILES_PARENT_DIR/dotfiles"
 if [ -d "$DOTFILES_DIR" ]; then
-  echo "Dotfiles already cloned."
+  echo "The dotfiles already cloned."
 else
   echo "Cloning dotfiles..."
   gh repo clone neokidev/dotfiles "$DOTFILES_DIR"
