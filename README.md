@@ -2,7 +2,15 @@
 
 There are my dotfiles for macOS.
 
-## Package overview
+## Installation
+
+Run the following commands in your terminal.
+
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/install.sh)"
+```
+
+## Overview
 
 - General settings for macOS
   - Speed up trackpad scaling
@@ -39,11 +47,3 @@ There are my dotfiles for macOS.
   - Install plugins
     - vim-surround
     - CamelCaseMotion
-
-## Installation
-
-Run the following commands in your terminal.
-
-```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/install.sh)"
-```
