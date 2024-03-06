@@ -441,7 +441,9 @@ multiselect_prompt() {
   eval "$retval"='("${result[@]}")'
 }
 
-trap "printf 'uwa-\n'; exit" 2
+# ========================================
+# Questions
+# ========================================
 
 print_question "Where should we clone the dotfiles?"
 DOTFILES_PARENT_DIR=$HOME
@@ -462,6 +464,10 @@ print_question "Whether to reboot the system after installation?"
 yes_no_prompt SHOULD_REBOOT
 printf "\n"
 
+# ========================================
+# Install Homebrew
+# ========================================
+
 if ! command -v brew &>/dev/null; then
   echo "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -471,6 +477,10 @@ if ! command -v brew &>/dev/null; then
 else
   echo "Homebrew already installed."
 fi
+
+# ========================================
+# Install GitHub CLI and login
+# ========================================
 
 if ! command -v gh &>/dev/null; then
   echo "Installing GitHub CLI..."
@@ -487,14 +497,74 @@ else
   echo "You are already logged in to GitHub."
 fi
 
+# ========================================
+# Clone the dotfiles
+# ========================================
+
 DOTFILES_DIR="$DOTFILES_PARENT_DIR/dotfiles"
 if [ -d "$DOTFILES_DIR" ]; then
   echo "The dotfiles already cloned."
 else
-  echo "Cloning dotfiles..."
+  echo "Cloning the dotfiles..."
   gh repo clone neokidev/dotfiles "$DOTFILES_DIR"
 fi
 
-cd "$DOTFILES_DIR" || exit
+# ========================================
+# Setup macOS preferences
+# ========================================
 
-# source "setup.sh"
+echo "Setting macOS preferences..."
+
+# Trackpad settings
+defaults write -g com.apple.trackpad.scaling 3
+
+# Mouse settings
+defaults write -g com.apple.mouse.scaling 3
+defaults write -g com.apple.scrollwheel.scaling 5
+
+# Keyboard settings
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
+defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
+
+# Scrollbar settings
+defaults write NSGlobalDomain AppleShowScrollBars -string "WhenScrolling"
+
+# ========================================
+# Install brew packages
+# ========================================
+
+echo "Installing Homebrew packages..."
+
+brew install "${BREW_PACKAGES[@]}"
+brew install --cask "${BREW_CASKS[@]}"
+
+# ========================================
+# Create symlinks
+# ========================================
+
+echo "Installing stow for creating symlinks..."
+brew install stow
+
+echo "Creating symlinks..."
+
+CONFIG_DIR="$HOME/.config"
+if [ ! -d "$CONFIG_DIR" ]; then
+  echo "Creating $CONFIG_DIR directory..."
+  mkdir -p "$CONFIG_DIR"
+fi
+
+for package_dir in "$DOTFILES_DIR/packages"/*; do
+  package_name=$(basename "$package_dir")
+  echo "Stowing $package_name..."
+  stow -v -d "$DOTFILES_DIR/packages" -t ~ "$package_name"
+done
+
+# ========================================
+# Reboot the system
+# ========================================
+
+if [ "$SHOULD_REBOOT" = true ]; then
+  echo "Rebooting the system..."
+  sudo reboot
+fi
