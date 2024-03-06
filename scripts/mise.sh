@@ -8,7 +8,7 @@ mise global nodejs@latest
 # Install pnpm
 echo "Installing pnpm with mise..."
 if ! mise plugin ls | grep -q 'pnpm'; then
-    mise plugin install pnpm -y
+  mise plugin install pnpm -y
 fi
 mise install pnpm@latest
 mise global pnpm@latest
