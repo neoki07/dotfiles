@@ -588,7 +588,8 @@ mise global go@latest
 echo "Installing Rustup..."
 if ! command -v rustup &>/dev/null; then
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-  source $HOME/.cargo/env
+  # shellcheck source=/dev/null
+  source "$HOME/.cargo/env"
 else
   echo "Rustup already installed."
 fi
