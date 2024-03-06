@@ -553,33 +553,6 @@ for cask in "${BREW_CASKS[@]}"; do
 done
 
 # ========================================
-# Create symlinks
-# ========================================
-
-echo "Installing stow for creating symlinks..."
-
-if ! command -v stow &>/dev/null; then
-  brew install stow
-  exit_if_last_command_failed
-else
-  echo "Stow already installed."
-fi
-
-echo "Creating symlinks..."
-
-CONFIG_DIR="$HOME/.config"
-if [ ! -d "$CONFIG_DIR" ]; then
-  echo "Creating $CONFIG_DIR directory..."
-  mkdir -p "$CONFIG_DIR"
-fi
-
-for package_dir in "$DOTFILES_DIR/packages"/*; do
-  package_name=$(basename "$package_dir")
-  echo "Stowing $package_name..."
-  stow -v -d "$DOTFILES_DIR/packages" -t ~ "$package_name"
-done
-
-# ========================================
 # Install some packages with mise
 # ========================================
 
@@ -637,6 +610,33 @@ echo "Setting up VSCode..."
 # Enable key repeat
 # Reference: https://marketplace.visualstudio.com/items?itemName=vscodevim.vim
 defaults write com.microsoft.VSCodeInsiders ApplePressAndHoldEnabled -bool false
+
+# ========================================
+# Create symlinks
+# ========================================
+
+echo "Installing stow for creating symlinks..."
+
+if ! command -v stow &>/dev/null; then
+  brew install stow
+  exit_if_last_command_failed
+else
+  echo "Stow already installed."
+fi
+
+echo "Creating symlinks..."
+
+CONFIG_DIR="$HOME/.config"
+if [ ! -d "$CONFIG_DIR" ]; then
+  echo "Creating $CONFIG_DIR directory..."
+  mkdir -p "$CONFIG_DIR"
+fi
+
+for package_dir in "$DOTFILES_DIR/packages"/*; do
+  package_name=$(basename "$package_dir")
+  echo "Stowing $package_name..."
+  stow -v -d "$DOTFILES_DIR/packages" -t ~ "$package_name"
+done
 
 # ========================================
 # Reboot the system
