@@ -536,8 +536,25 @@ defaults write NSGlobalDomain AppleShowScrollBars -string "WhenScrolling"
 
 echo "Installing Homebrew packages..."
 
-brew install "${BREW_PACKAGES[@]}"
-brew install --cask "${BREW_CASKS[@]}"
+INSTALLED_BREW_PACKAGES=$(brew list)
+
+for package in "${BREW_PACKAGES[@]}"; do
+  if echo "$INSTALLED_BREW_PACKAGES" | grep -q "^$package\$"; then
+    echo "$package already installed."
+  else
+    brew install "$package"
+    exit_if_last_command_failed
+  fi
+done
+
+for cask in "${BREW_CASKS[@]}"; do
+  if brew list --cask | grep -q "^$cask\$"; then
+    echo "$cask already installed."
+  else
+    brew install --cask "$cask"
+    exit_if_last_command_failed
+  fi
+done
 
 # ========================================
 # Create symlinks
