@@ -510,10 +510,10 @@ else
 fi
 
 # ========================================
-# Setup macOS preferences
+# Set up macOS preferences
 # ========================================
 
-echo "Setting macOS preferences..."
+echo "Setting up macOS preferences..."
 
 # Trackpad settings
 defaults write -g com.apple.trackpad.scaling 3
@@ -582,6 +582,65 @@ for package_dir in "$DOTFILES_DIR/packages"/*; do
   echo "Stowing $package_name..."
   stow -v -d "$DOTFILES_DIR/packages" -t ~ "$package_name"
 done
+
+# ========================================
+# Install some packages with mise
+# ========================================
+
+echo "Installing some packages with mise..."
+
+# Install Node.js
+echo "Installing Node.js..."
+mise install nodejs@latest
+mise global nodejs@latest
+
+# Install pnpm
+echo "Installing pnpm..."
+if ! mise plugin ls | grep -q 'pnpm'; then
+  mise plugin install pnpm -y
+fi
+mise install pnpm@latest
+mise global pnpm@latest
+
+# Install Bun
+echo "Installing Bun..."
+mise install bun@latest
+mise global bun@latest
+
+# Install Go
+echo "Installing Go..."
+mise install go@latest
+mise global go@latest
+
+# ========================================
+# Install Rust
+# ========================================
+
+echo "Installing Rustup..."
+if ! command -v rustup &>/dev/null; then
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  source $HOME/.cargo/env
+else
+  echo "Rustup already installed."
+fi
+
+if ! command -v rustc &>/dev/null; then
+  echo "Installing Rust..."
+  rustup install stable
+  rustup install nightly
+else
+  echo "Rust is already installed."
+fi
+
+# ========================================
+# Set up VSCode
+# ========================================
+
+echo "Setting up VSCode..."
+
+# Enable key repeat
+# Reference: https://marketplace.visualstudio.com/items?itemName=vscodevim.vim
+defaults write com.microsoft.VSCodeInsiders ApplePressAndHoldEnabled -bool false
 
 # ========================================
 # Reboot the system
