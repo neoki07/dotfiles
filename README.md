@@ -42,18 +42,8 @@ There are my dotfiles for macOS.
 
 ## Installation
 
-### 1. Prepare
-
-Install Xcode Command Line Tools.
+Run the following commands in your terminal.
 
 ```sh
-xcode-select --install
-```
-
-### 2. Clone this repository and run setup script
-
-```sh
-git clone https://github.com/ot07/dotfiles.git
-cd dotfiles
-sh setup.sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/install.sh)"
 ```
