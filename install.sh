@@ -460,10 +460,6 @@ BREW_CASKS=()
 multiselect_prompt BREW_CASKS "1password;arc;brave-browser;brewlet;discord;figma;jetbrains-toolbox;min;notion;obsidian;orbstack;raycast;slack;spotify;tableplus;visual-studio-code;warp" true
 printf "\n"
 
-print_question "Whether to reboot the system after installation?"
-yes_no_prompt SHOULD_REBOOT
-printf "\n"
-
 # ========================================
 # Install Homebrew
 # ========================================
@@ -645,6 +641,10 @@ defaults write com.microsoft.VSCodeInsiders ApplePressAndHoldEnabled -bool false
 # ========================================
 # Reboot the system
 # ========================================
+
+print_question "Setup completed. Do you want to reboot the system?"
+yes_no_prompt SHOULD_REBOOT
+printf "\n"
 
 if [ "$SHOULD_REBOOT" = true ]; then
   echo "Rebooting the system..."
