@@ -24,29 +24,36 @@ KEY_DOWN_SUFFIX="[B"
 KEY_RIGHT_SUFFIX="[C"
 KEY_LEFT_SUFFIX="[D"
 
-function cursor_blink_on {
+exit_if_last_command_failed() {
+  local status=$?
+  if [ "$status" -ne 0 ]; then
+    exit "$status"
+  fi
+}
+
+cursor_blink_on() {
   printf "%s[?25h" "$ESC"
 }
 
-function cursor_blink_off {
+cursor_blink_off() {
   printf "%s[?25l" "$ESC"
 }
 
-function cursor_to {
+cursor_to() {
   printf "%s[$1;${2:-1}H" "$ESC"
 }
 
-function clear_line {
+clear_line() {
   printf "\r%s[K" "$ESC"
 }
 
-function read_key {
+read_key() {
   local key
   IFS= read -rsn1 key 2>/dev/null >&2
   echo "$key"
 }
 
-function get_cursor_row {
+get_cursor_row() {
   stty -echo
   # shellcheck disable=SC2162
   IFS=';' read -sdR -p $'\E[6n' ROW _COL </dev/tty
@@ -54,12 +61,12 @@ function get_cursor_row {
   stty echo
 }
 
-function print_question {
+print_question() {
   local question=$1
   echo "$STYLE_CYAN?$STYLE_RESET $question"
 }
 
-function text_prompt {
+text_prompt() {
   print_input() {
     local input=$1
     printf "%s" "$input"
@@ -137,7 +144,7 @@ function text_prompt {
   eval "$retval=$input"
 }
 
-function yes_no_prompt {
+yes_no_prompt() {
   print_options() {
     local selected=$1
 
@@ -193,7 +200,7 @@ function yes_no_prompt {
   eval "$retval=$selected"
 }
 
-function select_prompt {
+select_prompt() {
   print_option() {
     local option=$1
     local selected=$2
@@ -287,7 +294,7 @@ function select_prompt {
   eval "$retval"="${options[$selected_idx]}"
 }
 
-function multiselect_prompt {
+multiselect_prompt() {
   print_option() {
     local option=$1
     local selected=$2
@@ -434,6 +441,8 @@ function multiselect_prompt {
   eval "$retval"='("${result[@]}")'
 }
 
+trap "printf 'uwa-\n'; exit" 2
+
 print_question "Where should we clone the dotfiles?"
 DOTFILES_PARENT_DIR=$HOME
 text_prompt DOTFILES_PARENT_DIR "$HOME (\$HOME)" "$HOME"
@@ -456,6 +465,8 @@ printf "\n"
 if ! command -v brew &>/dev/null; then
   echo "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  exit_if_last_command_failed
+
   eval "$(/opt/homebrew/bin/brew shellenv)"
 else
   echo "Homebrew already installed."
@@ -464,12 +475,14 @@ fi
 if ! command -v gh &>/dev/null; then
   echo "Installing GitHub CLI..."
   brew install gh
+  exit_if_last_command_failed
 else
   echo "GitHub CLI already installed."
 fi
 
 if gh auth status 2>&1 | grep -q "You are not logged into any GitHub hosts."; then
   gh auth login -w
+  exit_if_last_command_failed
 else
   echo "You are already logged in to GitHub."
 fi
