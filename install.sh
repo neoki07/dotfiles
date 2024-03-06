@@ -561,7 +561,13 @@ done
 # ========================================
 
 echo "Installing stow for creating symlinks..."
-brew install stow
+
+if ! command -v stow &>/dev/null; then
+  brew install stow
+  exit_if_last_command_failed
+else
+  echo "Stow already installed."
+fi
 
 echo "Creating symlinks..."
 
