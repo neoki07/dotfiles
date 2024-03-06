@@ -1,6 +1,7 @@
 *
 !*/
 
+!/install.sh
 !/setup.sh
 !/packages/ideavim/.ideavimrc
 !/packages/neovim/.config/nvim/init.lua
