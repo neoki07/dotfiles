@@ -642,11 +642,14 @@ done
 # Reboot the system
 # ========================================
 
-print_question "Setup completed. Do you want to reboot the system?"
+printf "\n"
+print_question "Setup completed! Do you want to reboot the system?"
 yes_no_prompt SHOULD_REBOOT
 printf "\n"
 
 if [ "$SHOULD_REBOOT" = true ]; then
   echo "Rebooting the system..."
   sudo reboot
+else
+  echo "Bye!"
 fi
