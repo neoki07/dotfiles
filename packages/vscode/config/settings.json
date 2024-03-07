@@ -1,0 +1,33 @@
+{
+  "workbench.colorTheme": "Dracula",
+  "editor.inlineSuggest.enabled": true,
+  "prettier.documentSelectors": ["**/*.astro"],
+  "[html][css][javascript][javascriptreact][typescript][typescriptreact][json][jsonc][astro][yaml][yml][github-actions-workflow]": {
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.fontFamily": "'JetBrains Mono', Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontSize": 13,
+  "terminal.integrated.fontSize": 13,
+  "git.autofetch": true,
+  "terminal.integrated.scrollback": 10000,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "javascript.preferGoToSourceDefinition": true,
+  "typescript.preferGoToSourceDefinition": true,
+  "editor.formatOnSave": true,
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": true,
+    "scminput": false
+  },
+  "redhat.telemetry.enabled": false,
+  "editor.fontLigatures": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "workbench.iconTheme": "material-icon-theme",
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "go.toolsManagement.autoUpdate": true
+}

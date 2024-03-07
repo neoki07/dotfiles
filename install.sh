@@ -612,6 +612,25 @@ echo "Setting up VSCode..."
 # Reference: https://marketplace.visualstudio.com/items?itemName=vscodevim.vim
 defaults write com.microsoft.VSCodeInsiders ApplePressAndHoldEnabled -bool false
 
+echo "Installing stow for creating symlinks..."
+
+if ! command -v stow &>/dev/null; then
+  brew install stow
+  exit_if_last_command_failed
+else
+  echo "Stow already installed."
+fi
+
+echo "Creating symlinks for VSCode configuration..."
+VSCODE_CONFIG_DIR="$HOME/Library/Application Support/Code/User"
+stow -v -d "$DOTFILES_DIR/packages/vscode" -t "$VSCODE_CONFIG_DIR" "config"
+
+echo "Installing VSCode extensions..."
+VSCODE_EXTENSIONS=$(<"$DOTFILES_DIR/packages/vscode/extensions")
+for extension in $VSCODE_EXTENSIONS; do
+  code --install-extension "$extension"
+done
+
 # ========================================
 # Create symlinks
 # ========================================
@@ -635,6 +654,10 @@ fi
 
 for package_dir in "$DOTFILES_DIR/packages"/*; do
   package_name=$(basename "$package_dir")
+  if [ "$(basename "$package_dir")" = "vscode" ]; then
+    continue
+  fi
+
   echo "Stowing $package_name..."
   stow -v -d "$DOTFILES_DIR/packages" -t ~ "$package_name"
 done
