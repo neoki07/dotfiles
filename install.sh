@@ -623,6 +623,10 @@ fi
 
 echo "Creating symlinks for VSCode configuration..."
 VSCODE_CONFIG_DIR="$HOME/Library/Application Support/Code/User"
+if [ ! -d "$VSCODE_CONFIG_DIR" ]; then
+  echo "Creating $VSCODE_CONFIG_DIR directory..."
+  mkdir -p "$VSCODE_CONFIG_DIR"
+fi
 stow -v -d "$DOTFILES_DIR/packages/vscode" -t "$VSCODE_CONFIG_DIR" "config"
 
 echo "Installing VSCode extensions..."
