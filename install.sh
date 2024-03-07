@@ -446,6 +446,7 @@ multiselect_prompt() {
 # ========================================
 
 sudo -v
+printf "\n"
 
 # ========================================
 # Questions
@@ -633,7 +634,7 @@ if [ ! -d "$VSCODE_CONFIG_DIR" ]; then
   echo "Creating $VSCODE_CONFIG_DIR directory..."
   mkdir -p "$VSCODE_CONFIG_DIR"
 fi
-stow -v -d "$DOTFILES_DIR/packages/vscode" -t "$VSCODE_CONFIG_DIR" "config"
+stow -v -d "$DOTFILES_DIR/vscode" -t "$VSCODE_CONFIG_DIR" "config"
 
 echo "Installing VSCode extensions..."
 VSCODE_EXTENSIONS=$(<"$DOTFILES_DIR/packages/vscode/extensions")
@@ -664,10 +665,6 @@ fi
 
 for package_dir in "$DOTFILES_DIR/packages"/*; do
   package_name=$(basename "$package_dir")
-  if [ "$(basename "$package_dir")" = "vscode" ]; then
-    continue
-  fi
-
   echo "Stowing $package_name..."
   stow -v -d "$DOTFILES_DIR/packages" -t ~ "$package_name"
 done
