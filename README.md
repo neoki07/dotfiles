@@ -47,3 +47,10 @@ Run the following commands in your terminal.
   - Install plugins
     - vim-surround
     - CamelCaseMotion
+
+## TODO
+
+- [ ] Disable spotlight shortcuts
+- [ ] Switch caps lock and control keys
+- [ ] Write to README.md about how to import Raycast settings
+- [ ] Brave extensions
