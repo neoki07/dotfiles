@@ -550,7 +550,7 @@ GH_ZIP_FILE=$GH_EXTRACTED_DIR.zip
 GH_COMMAND_PATH=$GH_EXTRACTED_DIR/bin/gh
 
 curl -L $GH_DISTRIBUTE_URL -o "$GH_ZIP_FILE"
-unzip "$GH_ZIP_FILE"
+unzip "$GH_ZIP_FILE" -d "$TMPDIR"
 
 "${GH_EXTRACTED_DIR}"/bin/gh --version
 
@@ -803,7 +803,7 @@ printf "\n"
 
 if [ "$SHOULD_REBOOT" = true ]; then
   echo "Rebooting the system..."
-  echo "$PASSWORD" | sudo -S reboot
+  echo "$PASSWORD" | sudo -S reboot 2>/dev/null
 else
   echo "Please reboot the system to apply the changes."
 fi
