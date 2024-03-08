@@ -344,7 +344,6 @@ select_prompt() {
     esac
   done
 
-  cursor_to "$lastrow"
   printf "\n"
   cursor_blink_on
   stty echo
@@ -488,7 +487,6 @@ multiselect_prompt() {
     esac
   done
 
-  cursor_to "$lastrow"
   printf "\n"
   cursor_blink_on
   stty echo
