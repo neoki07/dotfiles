@@ -1,14 +1,8 @@
-20chan.vscode-sort-package-json-without-scripts
-arjun.swagger-viewer
 artdiniz.quitcontrol-vscode
 astro-build.astro-vscode
 asvetliakov.vscode-neovim
-biomejs.biome
 bradlc.vscode-tailwindcss
-burkeholland.simple-react-snippets
-chakra-ui.panda-css-vscode
 dbaeumer.vscode-eslint
-dmytrobaida.gpt-commit
 dracula-theme.theme-dracula
 editorconfig.editorconfig
 esbenp.prettier-vscode
@@ -16,8 +10,6 @@ firsttris.vscode-jest-runner
 formulahendry.auto-close-tag
 formulahendry.auto-rename-tag
 foxundermoon.shell-format
-github.copilot
-github.copilot-chat
 github.vscode-github-actions
 golang.go
 irongeek.vscode-env
@@ -33,7 +25,6 @@ ms-vscode.js-debug-nightly
 ms-vscode.makefile-tools
 ms-vscode.vscode-typescript-next
 oderwat.indent-rainbow
-orta.vscode-jest
 pkief.material-icon-theme
 prisma.prisma
 redhat.vscode-yaml
@@ -43,14 +34,8 @@ simonsiefke.svg-preview
 streetsidesoftware.code-spell-checker
 svelte.svelte-vscode
 tamasfe.even-better-toml
-tauri-apps.tauri-vscode
 timonwong.shellcheck
-unifiedjs.vscode-mdx
-unional.vscode-sort-package-json
 usernamehw.errorlens
-vadimcn.vscode-lldb
 vitest.explorer
 vue.volar
-wakatime.vscode-wakatime
 wix.vscode-import-cost
-zoellner.openapi-preview

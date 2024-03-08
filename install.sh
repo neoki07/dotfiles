@@ -664,6 +664,11 @@ for extension in $VSCODE_EXTENSIONS; do
   code --install-extension "$extension"
 done
 
+VSCODE_PERSONAL_EXTENSIONS=$(<"$DOTFILES_DIR/packages/vscode/extensions-personal")
+for extension in $VSCODE_PERSONAL_EXTENSIONS; do
+  code --install-extension "$extension"
+done
+
 # ========================================
 # Create symlinks
 # ========================================
