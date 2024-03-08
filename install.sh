@@ -446,6 +446,7 @@ multiselect_prompt() {
 # ========================================
 
 sudo -v
+exit_if_last_command_failed
 printf "\n"
 
 # ========================================
@@ -468,37 +469,28 @@ multiselect_prompt BREW_CASKS "1password;arc;brave-browser;brewlet;discord;figma
 printf "\n"
 
 # ========================================
-# Install Homebrew
+# Login to GitHub
 # ========================================
 
-if ! command -v brew &>/dev/null; then
-  echo "Installing Homebrew..."
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  exit_if_last_command_failed
+GH_DISTRIBUTE_URL="https://github.com/cli/cli/releases/download/v2.45.0/gh_2.45.0_macOS_arm64.zip"
+GH_ZIP_FILE=$(basename $GH_DISTRIBUTE_URL)
+GH_EXTRACTED_DIR=$(basename "$GH_ZIP_FILE" .zip)
+GH_COMMAND_PATH=${GH_EXTRACTED_DIR}/bin/gh
 
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-else
-  echo "Homebrew already installed."
-fi
+curl -L $GH_DISTRIBUTE_URL -o "$GH_ZIP_FILE"
+unzip "$GH_ZIP_FILE"
 
-# ========================================
-# Install GitHub CLI and login
-# ========================================
+"${GH_EXTRACTED_DIR}"/bin/gh --version
 
-if ! command -v gh &>/dev/null; then
-  echo "Installing GitHub CLI..."
-  brew install gh
-  exit_if_last_command_failed
-else
-  echo "GitHub CLI already installed."
-fi
-
-if gh auth status 2>&1 | grep -q "You are not logged into any GitHub hosts."; then
-  gh auth login -w
+if ${GH_COMMAND_PATH} auth status 2>&1 | grep -q "You are not logged into any GitHub hosts."; then
+  ${GH_COMMAND_PATH} auth login -w
   exit_if_last_command_failed
 else
   echo "You are already logged in to GitHub."
 fi
+
+rm -rf "$GH_ZIP_FILE"
+rm -rf "$GH_EXTRACTED_DIR"
 
 # ========================================
 # Clone the dotfiles
@@ -532,6 +524,20 @@ defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
 
 # Scrollbar settings
 defaults write NSGlobalDomain AppleShowScrollBars -string "WhenScrolling"
+
+# ========================================
+# Install Homebrew
+# ========================================
+
+if ! command -v brew &>/dev/null; then
+  echo "Installing Homebrew..."
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  exit_if_last_command_failed
+
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+else
+  echo "Homebrew already installed."
+fi
 
 # ========================================
 # Install brew packages
