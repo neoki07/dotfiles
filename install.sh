@@ -546,9 +546,9 @@ printf "\n"
 # ========================================
 
 GH_DISTRIBUTE_URL="https://github.com/cli/cli/releases/download/v2.45.0/gh_2.45.0_macOS_arm64.zip"
-GH_ZIP_FILE=$(basename $GH_DISTRIBUTE_URL)
-GH_EXTRACTED_DIR=$(basename "$GH_ZIP_FILE" .zip)
-GH_COMMAND_PATH=${GH_EXTRACTED_DIR}/bin/gh
+GH_EXTRACTED_DIR=$TMPDIR/$(basename "$GH_DISTRIBUTE_URL" .zip)
+GH_ZIP_FILE=$GH_EXTRACTED_DIR.zip
+GH_COMMAND_PATH=$GH_EXTRACTED_DIR/bin/gh
 
 curl -L $GH_DISTRIBUTE_URL -o "$GH_ZIP_FILE"
 unzip "$GH_ZIP_FILE"
