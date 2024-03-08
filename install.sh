@@ -512,16 +512,14 @@ DOTFILES_PARENT_DIR=$HOME
 text_prompt DOTFILES_PARENT_DIR "$HOME (\$HOME)" "$HOME"
 printf "\n"
 
-sudo -n true 2>/dev/null
-if [ $? -ne 0 ]; then
+if ! sudo -n true 2>/dev/null; then
   print_question "What is your account password? (using for installing Homebrew)"
 
   while true; do
     password_prompt PASSWORD
     printf "\n"
-    echo "$PASSWORD" | sudo -S -v 2>/dev/null
 
-    if [ $? -eq 0 ]; then
+    if echo "$PASSWORD" | sudo -S -v 2>/dev/null; then
       break
     else
       print_warning "The password is incorrect. Please try again."
