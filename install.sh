@@ -6,6 +6,7 @@ STYLE_RESET="${ESC}[m"
 STYLE_BOLD="${ESC}[1m"
 STYLE_ITALIC="${ESC}[3m"
 STYLE_GREEN="${ESC}[32m"
+STYLE_YELLOW="${ESC}[33m"
 STYLE_CYAN="${ESC}[36m"
 STYLE_GRAY="${ESC}[90m"
 
@@ -71,15 +72,20 @@ print_question() {
   echo "$STYLE_CYAN?$STYLE_RESET $question"
 }
 
+print_warning() {
+  local warning=$1
+  echo "$STYLE_YELLOW! $warning$STYLE_RESET"
+}
+
 text_prompt() {
   print_input() {
     local input=$1
-    printf "%s" "$input"
+    printf "%s❯%s %s" "$STYLE_GREEN" "$STYLE_RESET" "$input"
   }
 
   print_placeholder() {
     local placeholder=$1
-    printf "%s%s%s" "$STYLE_GRAY" "$placeholder" "$STYLE_RESET"
+    printf "%s❯%s %s%s%s" "$STYLE_GREEN" "$STYLE_RESET" "$STYLE_GRAY" "$placeholder" "$STYLE_RESET"
   }
 
   key_to_command() {
@@ -168,6 +174,7 @@ password_prompt() {
   cursor_blink_off
   stty -echo
 
+  printf "%s❯%s" "$STYLE_GREEN" "$STYLE_RESET"
   while :; do
     key=$(read_key)
     case $(key_to_command "$key") in
@@ -177,10 +184,12 @@ password_prompt() {
     esac
   done
 
+  clear_line
+
   cursor_blink_on
   stty echo
 
-  printf "%s%sSecret%s\n" "$STYLE_GRAY" "$STYLE_ITALIC" "$STYLE_RESET"
+  printf "%s❯%s %s%sSecret%s\n" "$STYLE_GREEN" "$STYLE_RESET" "$STYLE_GRAY" "$STYLE_ITALIC" "$STYLE_RESET"
 
   eval "$retval=$input"
 }
@@ -515,7 +524,7 @@ if [ $? -ne 0 ]; then
     if [ $? -eq 0 ]; then
       break
     else
-      print_question "The password is incorrect. Please try again."
+      print_warning "The password is incorrect. Please try again."
     fi
   done
 fi
