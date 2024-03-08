@@ -4,6 +4,7 @@ ESC=$(printf "\033")
 
 STYLE_RESET="${ESC}[m"
 STYLE_BOLD="${ESC}[1m"
+STYLE_ITALIC="${ESC}[3m"
 STYLE_GREEN="${ESC}[32m"
 STYLE_CYAN="${ESC}[36m"
 STYLE_GRAY="${ESC}[90m"
@@ -144,6 +145,42 @@ text_prompt() {
   else
     printf "%s%s%s\n" "$STYLE_GRAY" "$input" "$STYLE_RESET"
   fi
+
+  eval "$retval=$input"
+}
+
+password_prompt() {
+  key_to_command() {
+    local key=$1
+    if [[ $key == "$KEY_ENTER" ]]; then
+      echo "enter"
+    elif [[ $key == "$KEY_BACKSPACE" ]]; then
+      echo "backspace"
+    else
+      echo "input"
+    fi
+  }
+
+  local retval=$1
+  local input
+
+  trap "printf '\n'; cursor_blink_on; stty echo; exit" 2
+  cursor_blink_off
+  stty -echo
+
+  while :; do
+    key=$(read_key)
+    case $(key_to_command "$key") in
+    enter) break ;;
+    backspace) input="${input%?}" ;;
+    input) input+="$key" ;;
+    esac
+  done
+
+  cursor_blink_on
+  stty echo
+
+  printf "%s%sSecret%s\n" "$STYLE_GRAY" "$STYLE_ITALIC" "$STYLE_RESET"
 
   eval "$retval=$input"
 }
@@ -458,14 +495,6 @@ multiselect_prompt() {
 }
 
 # ========================================
-# Create sudo session for installing Homebrew
-# ========================================
-
-sudo -v
-exit_if_last_command_failed
-printf "\n"
-
-# ========================================
 # Questions
 # ========================================
 
@@ -474,8 +503,25 @@ DOTFILES_PARENT_DIR=$HOME
 text_prompt DOTFILES_PARENT_DIR "$HOME (\$HOME)" "$HOME"
 printf "\n"
 
+sudo -n true 2>/dev/null
+if [ $? -ne 0 ]; then
+  print_question "What is your account password? (using for installing Homebrew)"
+
+  while true; do
+    password_prompt PASSWORD
+    printf "\n"
+    echo "$PASSWORD" | sudo -S -v 2>/dev/null
+
+    if [ $? -eq 0 ]; then
+      break
+    else
+      print_question "The password is incorrect. Please try again."
+    fi
+  done
+fi
+
 print_question "Which mode do you want to use for the installation?"
-select_prompt INSTALL_MODE "Porsonal;Work"
+select_prompt INSTALL_MODE "Porsonal;Work;Custom"
 printf "\n"
 
 print_question "Which brew packages do you want to install?"
