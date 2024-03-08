@@ -474,6 +474,10 @@ DOTFILES_PARENT_DIR=$HOME
 text_prompt DOTFILES_PARENT_DIR "$HOME (\$HOME)" "$HOME"
 printf "\n"
 
+print_question "Which mode do you want to use for the installation?"
+select_prompt INSTALL_MODE "Porsonal;Work"
+printf "\n"
+
 print_question "Which brew packages do you want to install?"
 BREW_PACKAGES=()
 multiselect_prompt BREW_PACKAGES "fzf;git;golang-migrate;mise;neovim;sqlc;starship;wasm-pack" true
@@ -664,10 +668,12 @@ for extension in $VSCODE_EXTENSIONS; do
   code --install-extension "$extension"
 done
 
-VSCODE_PERSONAL_EXTENSIONS=$(<"$DOTFILES_DIR/packages/vscode/extensions-personal")
-for extension in $VSCODE_PERSONAL_EXTENSIONS; do
-  code --install-extension "$extension"
-done
+if [ "$INSTALL_MODE" = "Personal" ]; then
+  VSCODE_PERSONAL_EXTENSIONS=$(<"$DOTFILES_DIR/packages/vscode/extensions-personal")
+  for extension in $VSCODE_PERSONAL_EXTENSIONS; do
+    code --install-extension "$extension"
+  done
+fi
 
 # ========================================
 # Create symlinks
