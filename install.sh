@@ -597,6 +597,18 @@ defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
 defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
 
+defaults -currentHost write -g "com.apple.keyboard.modifiermapping.$(ioreg -c AppleEmbeddedKeyboard -r | grep -Eiw "VendorID|ProductID" | awk '{ print $4 }' | paste -s -d'-\n' -)-0" -array "
+<dict>
+  <key>HIDKeyboardModifierMappingDst</key><integer>30064771129</integer>
+  <key>HIDKeyboardModifierMappingSrc</key><integer>30064771296</integer>
+</dict>
+" "
+<dict>
+  <key>HIDKeyboardModifierMappingDst</key><integer>30064771296</integer>
+  <key>HIDKeyboardModifierMappingSrc</key><integer>30064771129</integer>
+</dict>
+"
+
 # Scrollbar settings
 defaults write NSGlobalDomain AppleShowScrollBars -string "WhenScrolling"
 
