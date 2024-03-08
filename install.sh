@@ -608,6 +608,10 @@ defaults -currentHost write -g "com.apple.keyboard.modifiermapping.$(ioreg -c Ap
 </dict>
 "
 
+# Scrollbar settings
+defaults write NSGlobalDomain AppleShowScrollBars -string "WhenScrolling"
+
+# Disable spotlight shortcuts
 defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 "
 <dict>
   <key>enabled</key><false/>
@@ -633,9 +637,6 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 "
     <key>type</key><string>standard</string>
   </dict>
 </dict>"
-
-# Scrollbar settings
-defaults write NSGlobalDomain AppleShowScrollBars -string "WhenScrolling"
 
 # ========================================
 # Install Homebrew
