@@ -13,6 +13,10 @@ KEY_ESC=$'\x1b'
 KEY_SPACE=$'\x20'
 KEY_BACKSPACE=$'\x7f'
 KEY_A="a"
+KEY_H="h"
+KEY_J="j"
+KEY_K="k"
+KEY_L="l"
 KEY_CTRL_P=$'\x10'
 KEY_CTRL_N=$'\x0e'
 KEY_CTRL_F=$'\x06'
@@ -158,6 +162,10 @@ yes_no_prompt() {
   key_to_command() {
     local key=$1
     if [[ $key == "$KEY_ENTER" ]]; then echo "enter"; fi
+    if [[ $key == "$KEY_H" ]]; then echo "toggle"; fi
+    if [[ $key == "$KEY_J" ]]; then echo "toggle"; fi
+    if [[ $key == "$KEY_K" ]]; then echo "toggle"; fi
+    if [[ $key == "$KEY_L" ]]; then echo "toggle"; fi
     if [[ $key == "$KEY_CTRL_F" ]]; then echo "toggle"; fi
     if [[ $key == "$KEY_CTRL_B" ]]; then echo "toggle"; fi
     if [[ $key == "$KEY_CTRL_P" ]]; then echo "toggle"; fi
@@ -222,6 +230,10 @@ select_prompt() {
     local key=$1
     if [[ $key = "$KEY_ENTER" ]]; then echo "enter"; fi
     if [[ $key = "$KEY_SPACE" ]]; then echo "space"; fi
+    if [[ $key = "$KEY_H" ]]; then echo "prev"; fi
+    if [[ $key = "$KEY_J" ]]; then echo "next"; fi
+    if [[ $key = "$KEY_K" ]]; then echo "prev"; fi
+    if [[ $key = "$KEY_L" ]]; then echo "next"; fi
     if [[ $key == "$KEY_CTRL_F" ]]; then echo "next"; fi
     if [[ $key == "$KEY_CTRL_B" ]]; then echo "prev"; fi
     if [[ $key = "$KEY_CTRL_P" ]]; then echo "prev"; fi
@@ -322,6 +334,10 @@ multiselect_prompt() {
     if [[ $key = "$KEY_ENTER" ]]; then echo "enter"; fi
     if [[ $key = "$KEY_A" ]]; then echo "all"; fi
     if [[ $key = "$KEY_SPACE" ]]; then echo "space"; fi
+    if [[ $key = "$KEY_H" ]]; then echo "prev"; fi
+    if [[ $key = "$KEY_J" ]]; then echo "next"; fi
+    if [[ $key = "$KEY_K" ]]; then echo "prev"; fi
+    if [[ $key = "$KEY_L" ]]; then echo "next"; fi
     if [[ $key == "$KEY_CTRL_F" ]]; then echo "next"; fi
     if [[ $key == "$KEY_CTRL_B" ]]; then echo "prev"; fi
     if [[ $key = "$KEY_CTRL_P" ]]; then echo "prev"; fi
