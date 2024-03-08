@@ -552,17 +552,12 @@ GH_COMMAND_PATH=$GH_EXTRACTED_DIR/bin/gh
 curl -L $GH_DISTRIBUTE_URL -o "$GH_ZIP_FILE"
 unzip "$GH_ZIP_FILE" -d "$TMPDIR"
 
-"${GH_EXTRACTED_DIR}"/bin/gh --version
-
 if ${GH_COMMAND_PATH} auth status 2>&1 | grep -q "You are not logged into any GitHub hosts."; then
   ${GH_COMMAND_PATH} auth login -w
   exit_if_last_command_failed
 else
   echo "You are already logged in to GitHub."
 fi
-
-rm -rf "$GH_ZIP_FILE"
-rm -rf "$GH_EXTRACTED_DIR"
 
 # ========================================
 # Clone the dotfiles
@@ -573,8 +568,15 @@ if [ -d "$DOTFILES_DIR" ]; then
   echo "The dotfiles already cloned."
 else
   echo "Cloning the dotfiles..."
-  gh repo clone neokidev/dotfiles "$DOTFILES_DIR"
+  ${GH_COMMAND_PATH} repo clone neokidev/dotfiles "$DOTFILES_DIR"
 fi
+
+# ========================================
+# Clean up gh files
+# ========================================
+
+rm -rf "$GH_ZIP_FILE"
+rm -rf "$GH_EXTRACTED_DIR"
 
 # ========================================
 # Set up macOS preferences
