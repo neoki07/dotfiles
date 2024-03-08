@@ -14,6 +14,7 @@
 !/raycast/Raycast.rayconfig
 !/vscode/config/settings.json
 !/vscode/extensions
+!/vscode/extensions-personal
 
 !README.md
 !.gitignore
