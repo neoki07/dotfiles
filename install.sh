@@ -512,20 +512,19 @@ DOTFILES_PARENT_DIR=$HOME
 text_prompt DOTFILES_PARENT_DIR "$HOME (\$HOME)" "$HOME"
 printf "\n"
 
-if ! sudo -n true 2>/dev/null; then
-  print_question "What is your account password? (using for installing Homebrew)"
+print_question "What is your account password?"
 
-  while true; do
-    password_prompt PASSWORD
-    printf "\n"
+sudo -k
+while true; do
+  password_prompt PASSWORD
+  printf "\n"
 
-    if echo "$PASSWORD" | sudo -S -v 2>/dev/null; then
-      break
-    else
-      print_warning "The password is incorrect. Please try again."
-    fi
-  done
-fi
+  if echo "$PASSWORD" | sudo -S -v 2>/dev/null; then
+    break
+  else
+    print_warning "The password is incorrect. Please try again."
+  fi
+done
 
 print_question "Which mode do you want to use for the installation?"
 select_prompt INSTALL_MODE "Porsonal;Work;Custom"
@@ -772,13 +771,13 @@ done
 # ========================================
 
 printf "\n"
-print_question "Setup completed! Do you want to reboot the system?"
+print_question "Installation is complete! Do you want to reboot the system?"
 yes_no_prompt SHOULD_REBOOT
 printf "\n"
 
 if [ "$SHOULD_REBOOT" = true ]; then
   echo "Rebooting the system..."
-  sudo reboot
+  echo "$PASSWORD" | sudo -S reboot
 else
-  echo "Bye!"
+  echo "Please reboot the system to apply the changes."
 fi
