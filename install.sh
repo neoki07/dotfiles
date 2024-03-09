@@ -4,6 +4,19 @@ BREW_PACKAGE_OPTIONS=("fzf" "git" "golang-migrate" "mise" "neovim" "sqlc" "stars
 BREW_CASK_OPTIONS=("1password" "arc" "brave-browser" "brewlet" "discord" "figma" "jetbrains-toolbox" "min" "notion" "obsidian" "orbstack" "raycast" "slack" "spotify" "tableplus" "visual-studio-code" "warp")
 OTHER_PACKAGE_OPTIONS=("nodejs" "pnpm" "bun" "go" "rust")
 
+VSCODE_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions"
+VSCODE_PERSONAL_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions-personal"
+
+VSCODE_EXTENSION_OPTIONS=()
+while read -r line; do
+  VSCODE_EXTENSION_OPTIONS+=("$line")
+done < <(curl -s "$VSCODE_EXTENSIONS_REMOTE_FILE")
+
+VSCODE_PERSONAL_EXTENSION_OPTIONS=()
+while read -r line; do
+  VSCODE_PERSONAL_EXTENSION_OPTIONS+=("$line")
+done < <(curl -s "$VSCODE_PERSONAL_EXTENSIONS_REMOTE_FILE")
+
 ESC=$(printf "\033")
 
 STYLE_RESET="${ESC}[m"
@@ -506,7 +519,7 @@ multiselect_prompt() {
 }
 
 # ========================================
-# Initial Questions
+# Questions
 # ========================================
 
 print_question "Where should we clone the dotfiles?"
@@ -527,6 +540,64 @@ while true; do
     print_warning "The password is incorrect. Please try again."
   fi
 done
+
+print_question "Which mode do you want to use for the installation?"
+select_prompt INSTALL_MODE "Personal;Work;Custom"
+printf "\n"
+
+BREW_PACKAGES=()
+BREW_CASKS=()
+OTHER_PACKAGES=()
+VSCODE_EXTENSIONS=()
+
+if [ "$INSTALL_MODE" = "Personal" ]; then
+  BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}")
+  BREW_CASKS=("${BREW_CASK_OPTIONS[@]}")
+  OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}")
+  VSCODE_EXTENSIONS=("${VSCODE_EXTENSION_OPTIONS[@]}" "${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}")
+elif [ "$INSTALL_MODE" = "Work" ]; then
+  BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}")
+  BREW_CASKS=("${BREW_CASK_OPTIONS[@]}")
+  OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}")
+  VSCODE_EXTENSIONS=("${VSCODE_EXTENSION_OPTIONS[@]}")
+elif [ "$INSTALL_MODE" = "Custom" ]; then
+  BREW_PACKAGE_OPTIONS_STRING=$(
+    IFS=';'
+    echo "${BREW_PACKAGE_OPTIONS[*]}"
+  )
+  BREW_CASK_OPTIONS_STRING=$(
+    IFS=';'
+    echo "${BREW_CASK_OPTIONS[*]}"
+  )
+  OTHER_PACKAGE_OPTIONS_STRING=$(
+    IFS=';'
+    echo "${OTHER_PACKAGE_OPTIONS[*]}"
+  )
+  MERGED_VSCODE_EXTENSION_OPTIONS=("${VSCODE_EXTENSION_OPTIONS[@]}" "${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}")
+  VSCODE_EXTENSION_OPTIONS_STRING=$(
+    IFS=';'
+    echo "${MERGED_VSCODE_EXTENSION_OPTIONS[*]}"
+  )
+
+  print_question "Which brew packages do you want to install?"
+  multiselect_prompt BREW_PACKAGES "$BREW_PACKAGE_OPTIONS_STRING" true
+  printf "\n"
+
+  print_question "Which brew applications do you want to install?"
+  multiselect_prompt BREW_CASKS "$BREW_CASK_OPTIONS_STRING" true
+  printf "\n"
+
+  print_question "Which other packages do you want to install?"
+  multiselect_prompt OTHER_PACKAGES "$OTHER_PACKAGE_OPTIONS_STRING" true
+  printf "\n"
+
+  print_question "Which VSCode extensions do you want to install?"
+  multiselect_prompt VSCODE_EXTENSIONS "$VSCODE_EXTENSION_OPTIONS_STRING" true
+  printf "\n"
+else
+  echo "Invalid mode: $INSTALL_MODE"
+  exit 1
+fi
 
 # ========================================
 # Login to GitHub
@@ -578,49 +649,6 @@ fi
 
 rm -rf "$GH_ZIP_FILE"
 rm -rf "$GH_EXTRACTED_DIR"
-
-# ========================================
-# Mode Selection
-# ========================================
-
-print_question "Which mode do you want to use for the installation?"
-select_prompt INSTALL_MODE "Personal;Work;Custom"
-printf "\n"
-
-VSCODE_EXTENSION_OPTIONS=$(<"$DOTFILES_DIR/vscode/extensions")
-VSCODE_PERSONAL_EXTENSION_OPTIONS=$(<"$DOTFILES_DIR/vscode/extensions-personal")
-
-BREW_PACKAGES=()
-BREW_CASKS=()
-OTHER_PACKAGES=()
-VSCODE_EXTENSIONS=()
-
-if [ "$INSTALL_MODE" = "Personal" ]; then
-  BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}")
-  BREW_CASKS=("${BREW_CASK_OPTIONS[@]}")
-  OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}")
-  VSCODE_EXTENSIONS=("$VSCODE_EXTENSION_OPTIONS $VSCODE_PERSONAL_EXTENSION_OPTIONS")
-elif [ "$INSTALL_MODE" = "Work" ]; then
-  BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}")
-  BREW_CASKS=("${BREW_CASK_OPTIONS[@]}")
-  OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}")
-  VSCODE_EXTENSIONS=("$VSCODE_EXTENSION_OPTIONS")
-elif [ "$INSTALL_MODE" = "Custom" ]; then
-  print_question "Which brew packages do you want to install?"
-  multiselect_prompt BREW_PACKAGES "${BREW_PACKAGE_OPTIONS[*]}" true
-  printf "\n"
-
-  print_question "Which brew applications do you want to install?"
-  multiselect_prompt BREW_CASKS "${BREW_CASK_OPTIONS[*]}" true
-  printf "\n"
-
-  print_question "Which other packages do you want to install?"
-  multiselect_prompt OTHER_PACKAGES "${OTHER_PACKAGE_OPTIONS[*]}" true
-  printf "\n"
-else
-  echo "Invalid mode: $INSTALL_MODE"
-  exit 1
-fi
 
 # ========================================
 # Set up macOS preferences
