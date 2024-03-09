@@ -1,5 +1,9 @@
 #!/bin/bash
 
+BREW_PACKAGE_OPTIONS=("fzf" "git" "golang-migrate" "mise" "neovim" "sqlc" "starship" "wasm-pack")
+BREW_CASK_OPTIONS=("1password" "arc" "brave-browser" "brewlet" "discord" "figma" "jetbrains-toolbox" "min" "notion" "obsidian" "orbstack" "raycast" "slack" "spotify" "tableplus" "visual-studio-code" "warp")
+OTHER_PACKAGE_OPTIONS=("nodejs" "pnpm" "bun" "go" "rust")
+
 ESC=$(printf "\033")
 
 STYLE_RESET="${ESC}[m"
@@ -502,7 +506,7 @@ multiselect_prompt() {
 }
 
 # ========================================
-# Questions
+# Initial Questions
 # ========================================
 
 print_question "Where should we clone the dotfiles?"
@@ -523,20 +527,6 @@ while true; do
     print_warning "The password is incorrect. Please try again."
   fi
 done
-
-print_question "Which mode do you want to use for the installation?"
-select_prompt INSTALL_MODE "Porsonal;Work;Custom"
-printf "\n"
-
-print_question "Which brew packages do you want to install?"
-BREW_PACKAGES=()
-multiselect_prompt BREW_PACKAGES "fzf;git;golang-migrate;mise;neovim;sqlc;starship;wasm-pack" true
-printf "\n"
-
-print_question "Which brew applications do you want to install?"
-BREW_CASKS=()
-multiselect_prompt BREW_CASKS "1password;arc;brave-browser;brewlet;discord;figma;jetbrains-toolbox;min;notion;obsidian;orbstack;raycast;slack;spotify;tableplus;visual-studio-code;warp" true
-printf "\n"
 
 # ========================================
 # Login to GitHub
@@ -575,6 +565,49 @@ fi
 
 rm -rf "$GH_ZIP_FILE"
 rm -rf "$GH_EXTRACTED_DIR"
+
+# ========================================
+# Mode Selection
+# ========================================
+
+print_question "Which mode do you want to use for the installation?"
+select_prompt INSTALL_MODE "Personal;Work;Custom"
+printf "\n"
+
+VSCODE_EXTENSION_OPTIONS=$(<"$DOTFILES_DIR/vscode/extensions")
+VSCODE_PERSONAL_EXTENSION_OPTIONS=$(<"$DOTFILES_DIR/vscode/extensions-personal")
+
+BREW_PACKAGES=()
+BREW_CASKS=()
+OTHER_PACKAGES=()
+VSCODE_EXTENSIONS=()
+
+if [ "$INSTALL_MODE" = "Personal" ]; then
+  BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}")
+  BREW_CASKS=("${BREW_CASK_OPTIONS[@]}")
+  OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}")
+  VSCODE_EXTENSIONS=("$VSCODE_EXTENSION_OPTIONS $VSCODE_PERSONAL_EXTENSION_OPTIONS")
+elif [ "$INSTALL_MODE" = "Work" ]; then
+  BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}")
+  BREW_CASKS=("${BREW_CASK_OPTIONS[@]}")
+  OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}")
+  VSCODE_EXTENSIONS=("$VSCODE_EXTENSION_OPTIONS")
+elif [ "$INSTALL_MODE" = "Custom" ]; then
+  print_question "Which brew packages do you want to install?"
+  multiselect_prompt BREW_PACKAGES "${BREW_PACKAGE_OPTIONS[*]}" true
+  printf "\n"
+
+  print_question "Which brew applications do you want to install?"
+  multiselect_prompt BREW_CASKS "${BREW_CASK_OPTIONS[*]}" true
+  printf "\n"
+
+  print_question "Which other packages do you want to install?"
+  multiselect_prompt OTHER_PACKAGES "${OTHER_PACKAGE_OPTIONS[*]}" true
+  printf "\n"
+else
+  echo "Invalid mode: $INSTALL_MODE"
+  exit 1
+fi
 
 # ========================================
 # Set up macOS preferences
@@ -682,53 +715,63 @@ for cask in "${BREW_CASKS[@]}"; do
 done
 
 # ========================================
-# Install some packages with mise
+# Install packages with mise
 # ========================================
 
-echo "Installing some packages with mise..."
+echo "Installing packages with mise..."
 
 # Install Node.js
-echo "Installing Node.js..."
-mise install nodejs@latest
-mise global nodejs@latest
+if [[ " ${OTHER_PACKAGES[*]} " =~ "nodejs" ]]; then
+  echo "Installing Node.js..."
+  mise install nodejs@latest
+  mise global nodejs@latest
+fi
 
 # Install pnpm
-echo "Installing pnpm..."
-if ! mise plugin ls | grep -q 'pnpm'; then
-  mise plugin install pnpm -y
+if [[ " ${OTHER_PACKAGES[*]} " =~ "pnpm" ]]; then
+  echo "Installing pnpm..."
+  if ! mise plugin ls | grep -q 'pnpm'; then
+    mise plugin install pnpm -y
+  fi
+  mise install pnpm@latest
+  mise global pnpm@latest
 fi
-mise install pnpm@latest
-mise global pnpm@latest
 
 # Install Bun
-echo "Installing Bun..."
-mise install bun@latest
-mise global bun@latest
+if [[ " ${OTHER_PACKAGES[*]} " =~ "bun" ]]; then
+  echo "Installing Bun..."
+  mise install bun@latest
+  mise global bun@latest
+fi
 
 # Install Go
-echo "Installing Go..."
-mise install go@latest
-mise global go@latest
+if [[ " ${OTHER_PACKAGES[*]} " =~ "go" ]]; then
+  echo "Installing Go..."
+  mise install go@latest
+  mise global go@latest
+fi
 
 # ========================================
 # Install Rust
 # ========================================
 
-echo "Installing Rustup..."
-if ! command -v rustup &>/dev/null; then
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-  # shellcheck source=/dev/null
-  source "$HOME/.cargo/env"
-else
-  echo "Rustup already installed."
-fi
+if [[ " ${OTHER_PACKAGES[*]} " =~ "rust" ]]; then
+  echo "Installing Rustup..."
+  if ! command -v rustup &>/dev/null; then
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    # shellcheck source=/dev/null
+    source "$HOME/.cargo/env"
+  else
+    echo "Rustup already installed."
+  fi
 
-if ! command -v rustc &>/dev/null; then
-  echo "Installing Rust..."
-  rustup install stable
-  rustup install nightly
-else
-  echo "Rust is already installed."
+  if ! command -v rustc &>/dev/null; then
+    echo "Installing Rust..."
+    rustup install stable
+    rustup install nightly
+  else
+    echo "Rust is already installed."
+  fi
 fi
 
 # ========================================
@@ -759,14 +802,12 @@ fi
 stow -v -d "$DOTFILES_DIR/vscode" -t "$VSCODE_CONFIG_DIR" "config"
 
 echo "Installing VSCode extensions..."
-VSCODE_EXTENSIONS=$(<"$DOTFILES_DIR/packages/vscode/extensions")
-for extension in $VSCODE_EXTENSIONS; do
+for extension in "${VSCODE_EXTENSIONS[@]}"; do
   code --install-extension "$extension"
 done
 
 if [ "$INSTALL_MODE" = "Personal" ]; then
-  VSCODE_PERSONAL_EXTENSIONS=$(<"$DOTFILES_DIR/packages/vscode/extensions-personal")
-  for extension in $VSCODE_PERSONAL_EXTENSIONS; do
+  for extension in "${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}"; do
     code --install-extension "$extension"
   done
 fi
