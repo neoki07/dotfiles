@@ -551,10 +551,11 @@ fi
 # Install Xcode Command Line Tools
 # ========================================
 
-if ! command -v xcode-select &>/dev/null; then
+if ! xcode-select -p &>/dev/null; then
   echo "Installing Xcode Command Line Tools..."
-  xcode-select --install
-  exit_if_last_command_failed
+  touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+  PROD=$(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
+  softwareupdate -i "$PROD"
 else
   echo "Xcode Command Line Tools already installed."
 fi
