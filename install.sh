@@ -548,6 +548,18 @@ else
 fi
 
 # ========================================
+# Install Xcode Command Line Tools
+# ========================================
+
+if ! command -v xcode-select &>/dev/null; then
+  echo "Installing Xcode Command Line Tools..."
+  xcode-select --install
+  exit_if_last_command_failed
+else
+  echo "Xcode Command Line Tools already installed."
+fi
+
+# ========================================
 # Clone the dotfiles
 # ========================================
 
