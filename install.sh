@@ -1,8 +1,13 @@
 #!/bin/bash
 
-BREW_PACKAGE_OPTIONS=("fzf" "git" "golang-migrate" "mise" "neovim" "sqlc" "starship" "wasm-pack")
-BREW_CASK_OPTIONS=("1password" "arc" "brave-browser" "brewlet" "discord" "figma" "jetbrains-toolbox" "min" "notion" "obsidian" "orbstack" "raycast" "slack" "spotify" "tableplus" "visual-studio-code" "warp")
+BREW_PACKAGE_OPTIONS=("fzf" "git" "mise" "neovim" "starship")
+BREW_PERSONAL_PACKAGE_OPTIONS=("golang-migrate" "sqlc" "wasm-pack")
+
+BREW_CASK_OPTIONS=("brave-browser" "brewlet" "orbstack" "raycast" "slack" "tableplus" "visual-studio-code" "warp")
+BREW_PERSONAL_CASK_OPTIONS=("1password" "arc" "discord" "figma" "jetbrains-toolbox" "min" "notion" "obsidian" "spotify")
+
 OTHER_PACKAGE_OPTIONS=("nodejs" "pnpm" "bun" "go" "rust")
+OTHER_PERSONAL_PACKAGE_OPTIONS=()
 
 VSCODE_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions"
 VSCODE_PERSONAL_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions-personal"
@@ -551,9 +556,9 @@ OTHER_PACKAGES=()
 VSCODE_EXTENSIONS=()
 
 if [ "$INSTALL_MODE" = "Personal" ]; then
-  BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}")
-  BREW_CASKS=("${BREW_CASK_OPTIONS[@]}")
-  OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}")
+  BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}" "${BREW_PERSONAL_PACKAGE_OPTIONS[@]}")
+  BREW_CASKS=("${BREW_CASK_OPTIONS[@]}" "${BREW_PERSONAL_CASK_OPTIONS[@]}")
+  OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}" "${OTHER_PERSONAL_PACKAGE_OPTIONS[@]}")
   VSCODE_EXTENSIONS=("${VSCODE_EXTENSION_OPTIONS[@]}" "${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}")
 elif [ "$INSTALL_MODE" = "Work" ]; then
   BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}")
@@ -561,18 +566,24 @@ elif [ "$INSTALL_MODE" = "Work" ]; then
   OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}")
   VSCODE_EXTENSIONS=("${VSCODE_EXTENSION_OPTIONS[@]}")
 elif [ "$INSTALL_MODE" = "Custom" ]; then
+  MERGED_BREW_PACKAGE_OPTIONS=("${BREW_PACKAGE_OPTIONS[@]}" "${BREW_PERSONAL_PACKAGE_OPTIONS[@]}")
   BREW_PACKAGE_OPTIONS_STRING=$(
     IFS=';'
-    echo "${BREW_PACKAGE_OPTIONS[*]}"
+    echo "${MERGED_BREW_PACKAGE_OPTIONS[*]}"
   )
+
+  MERGED_BREW_CASK_OPTIONS=("${BREW_CASK_OPTIONS[@]}" "${BREW_PERSONAL_CASK_OPTIONS[@]}")
   BREW_CASK_OPTIONS_STRING=$(
     IFS=';'
-    echo "${BREW_CASK_OPTIONS[*]}"
+    echo "${MERGED_BREW_CASK_OPTIONS[*]}"
   )
+
+  MERGED_OTHER_PACKAGE_OPTIONS=("${OTHER_PACKAGE_OPTIONS[@]}" "${OTHER_PERSONAL_PACKAGE_OPTIONS[@]}")
   OTHER_PACKAGE_OPTIONS_STRING=$(
     IFS=';'
-    echo "${OTHER_PACKAGE_OPTIONS[*]}"
+    echo "${MERGED_OTHER_PACKAGE_OPTIONS[*]}"
   )
+
   MERGED_VSCODE_EXTENSION_OPTIONS=("${VSCODE_EXTENSION_OPTIONS[@]}" "${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}")
   VSCODE_EXTENSION_OPTIONS_STRING=$(
     IFS=';'
