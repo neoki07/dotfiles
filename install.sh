@@ -71,14 +71,12 @@ run_command() {
   if [ "$status" -ne 0 ]; then
     exit "$status"
   fi
-
-  echo 0
 }
 
 run_check_command() {
   local command=$1
   eval "$command" >/dev/null 2>&1
-  echo $?
+  echo $? >/dev/null
 }
 
 cursor_blink_on() {
