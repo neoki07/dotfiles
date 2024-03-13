@@ -52,11 +52,36 @@ KEY_DOWN_SUFFIX="[B"
 KEY_RIGHT_SUFFIX="[C"
 KEY_LEFT_SUFFIX="[D"
 
-exit_if_last_command_failed() {
-  local status=$?
+run_command() {
+  local command=$1
+  local print_stdout=${2:-false}
+  local print_stderr=${3:-false}
+  local status
+
+  echo "Running: $command"
+
+  # TODO: Write to log file
+  if [ "$print_stdout" = true ] && [ "$print_stderr" = true ]; then
+    eval "$command"
+  elif [ "$print_stdout" = true ] && [ "$print_stderr" = false ]; then
+    eval "$command" 2>/dev/null
+  else
+    eval "$command" >/dev/null 2>&1
+  fi
+
+  status=$?
+  echo "Status: $status"
   if [ "$status" -ne 0 ]; then
     exit "$status"
   fi
+
+  echo 0
+}
+
+run_check_command() {
+  local command=$1
+  eval "$command" >/dev/null 2>&1
+  echo $?
 }
 
 cursor_blink_on() {
@@ -619,12 +644,11 @@ GH_EXTRACTED_DIR=$TMPDIR/$(basename "$GH_DISTRIBUTE_URL" .zip)
 GH_ZIP_FILE=$GH_EXTRACTED_DIR.zip
 GH_COMMAND_PATH=$GH_EXTRACTED_DIR/bin/gh
 
-curl -L $GH_DISTRIBUTE_URL -o "$GH_ZIP_FILE"
-unzip "$GH_ZIP_FILE" -d "$TMPDIR"
+run_command "curl -L $GH_DISTRIBUTE_URL -o $GH_ZIP_FILE"
+run_command "unzip -o $GH_ZIP_FILE -d $TMPDIR"
 
-if ${GH_COMMAND_PATH} auth status 2>&1 | grep -q "You are not logged into any GitHub hosts."; then
-  ${GH_COMMAND_PATH} auth login -w
-  exit_if_last_command_failed
+if run_check_command "${GH_COMMAND_PATH} auth status | grep -q 'You are not logged into any GitHub hosts.'"; then
+  run_command "${GH_COMMAND_PATH} auth login -w" true true
 else
   echo "You are already logged in to GitHub."
 fi
@@ -633,11 +657,11 @@ fi
 # Install Xcode Command Line Tools
 # ========================================
 
-if ! xcode-select -p &>/dev/null; then
+if ! run_check_command "xcode-select -p &>/dev/null"; then
   echo "Installing Xcode Command Line Tools..."
   touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
   PROD=$(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
-  softwareupdate -i "$PROD"
+  run_command "softwareupdate -i $PROD"
 else
   echo "Xcode Command Line Tools already installed."
 fi
@@ -732,8 +756,7 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 "
 
 if ! command -v brew &>/dev/null; then
   echo "Installing Homebrew..."
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  exit_if_last_command_failed
+  run_command "NONINTERACTIVE=1 /bin/bash -c $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
   eval "$(/opt/homebrew/bin/brew shellenv)"
 else
@@ -752,17 +775,15 @@ for package in "${BREW_PACKAGES[@]}"; do
   if echo "$INSTALLED_BREW_PACKAGES" | grep -q "^$package\$"; then
     echo "$package already installed."
   else
-    brew install "$package"
-    exit_if_last_command_failed
+    run_command "brew install $package"
   fi
 done
 
 for cask in "${BREW_CASKS[@]}"; do
-  if brew list --cask | grep -q "^$cask\$"; then
+  if run_check_command "brew list --cask | grep -q '^$cask\$'"; then
     echo "$cask already installed."
   else
-    brew install --cask "$cask"
-    exit_if_last_command_failed
+    run_command "brew install --cask $cask"
   fi
 done
 
@@ -775,32 +796,32 @@ echo "Installing packages with mise..."
 # Install Node.js
 if [[ " ${OTHER_PACKAGES[*]} " =~ "nodejs" ]]; then
   echo "Installing Node.js..."
-  mise install nodejs@latest
-  mise global nodejs@latest
+  run_command "mise install nodejs@latest"
+  run_command "mise global nodejs@latest"
 fi
 
 # Install pnpm
 if [[ " ${OTHER_PACKAGES[*]} " =~ "pnpm" ]]; then
   echo "Installing pnpm..."
-  if ! mise plugin ls | grep -q 'pnpm'; then
-    mise plugin install pnpm -y
+  if ! run_check_command "mise plugin ls | grep -q 'pnpm'"; then
+    run_command "mise plugin install pnpm -y"
   fi
-  mise install pnpm@latest
-  mise global pnpm@latest
+  run_command "mise install pnpm@latest"
+  run_command "mise global pnpm@latest"
 fi
 
 # Install Bun
 if [[ " ${OTHER_PACKAGES[*]} " =~ "bun" ]]; then
   echo "Installing Bun..."
-  mise install bun@latest
-  mise global bun@latest
+  run_command "mise install bun@latest"
+  run_command "mise global bun@latest"
 fi
 
 # Install Go
 if [[ " ${OTHER_PACKAGES[*]} " =~ "go" ]]; then
   echo "Installing Go..."
-  mise install go@latest
-  mise global go@latest
+  run_command "mise install go@latest"
+  run_command "mise global go@latest"
 fi
 
 # ========================================
@@ -810,7 +831,7 @@ fi
 if [[ " ${OTHER_PACKAGES[*]} " =~ "rust" ]]; then
   echo "Installing Rustup..."
   if ! command -v rustup &>/dev/null; then
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
     # shellcheck source=/dev/null
     source "$HOME/.cargo/env"
   else
@@ -819,8 +840,8 @@ if [[ " ${OTHER_PACKAGES[*]} " =~ "rust" ]]; then
 
   if ! command -v rustc &>/dev/null; then
     echo "Installing Rust..."
-    rustup install stable
-    rustup install nightly
+    run_command "rustup install stable"
+    run_command "rustup install nightly"
   else
     echo "Rust is already installed."
   fi
@@ -839,8 +860,7 @@ defaults write com.microsoft.VSCodeInsiders ApplePressAndHoldEnabled -bool false
 echo "Installing stow for creating symlinks..."
 
 if ! command -v stow &>/dev/null; then
-  brew install stow
-  exit_if_last_command_failed
+  run_command "brew install stow"
 else
   echo "Stow already installed."
 fi
@@ -851,16 +871,16 @@ if [ ! -d "$VSCODE_CONFIG_DIR" ]; then
   echo "Creating $VSCODE_CONFIG_DIR directory..."
   mkdir -p "$VSCODE_CONFIG_DIR"
 fi
-stow -v -d "$DOTFILES_DIR/vscode" -t "$VSCODE_CONFIG_DIR" "config"
+run_command "stow -v -d '$DOTFILES_DIR/vscode' -t $VSCODE_CONFIG_DIR config"
 
 echo "Installing VSCode extensions..."
 for extension in "${VSCODE_EXTENSIONS[@]}"; do
-  code --install-extension "$extension"
+  run_command "code --install-extension $extension"
 done
 
 if [ "$INSTALL_MODE" = "Personal" ]; then
   for extension in "${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}"; do
-    code --install-extension "$extension"
+    run_command "code --install-extension $extension"
   done
 fi
 
@@ -871,8 +891,7 @@ fi
 echo "Installing stow for creating symlinks..."
 
 if ! command -v stow &>/dev/null; then
-  brew install stow
-  exit_if_last_command_failed
+  run_command "brew install stow"
 else
   echo "Stow already installed."
 fi
@@ -888,7 +907,7 @@ fi
 for package_dir in "$DOTFILES_DIR/packages"/*; do
   package_name=$(basename "$package_dir")
   echo "Stowing $package_name..."
-  stow -v -d "$DOTFILES_DIR/packages" -t ~ "$package_name"
+  run_command "stow -v -d '$DOTFILES_DIR/packages' -t ~ $package_name"
 done
 
 # ========================================
