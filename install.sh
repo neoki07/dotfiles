@@ -58,8 +58,6 @@ run_command() {
   local print_stderr=${3:-false}
   local status
 
-  echo "Running: $command"
-
   # TODO: Write to log file
   if [ "$print_stdout" = true ] && [ "$print_stderr" = true ]; then
     eval "$command"
@@ -70,7 +68,6 @@ run_command() {
   fi
 
   status=$?
-  echo "Status: $status"
   if [ "$status" -ne 0 ]; then
     exit "$status"
   fi
