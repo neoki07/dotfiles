@@ -794,14 +794,14 @@ done
 echo "Installing packages with mise..."
 
 # Install Node.js
-if [[ " ${OTHER_PACKAGES[*]} " =~ "nodejs" ]]; then
+if [[ "${OTHER_PACKAGES[*]}" =~ "nodejs" ]]; then
   echo "Installing Node.js..."
   run_command "mise install nodejs@latest"
   run_command "mise global nodejs@latest"
 fi
 
 # Install pnpm
-if [[ " ${OTHER_PACKAGES[*]} " =~ "pnpm" ]]; then
+if [[ "${OTHER_PACKAGES[*]}" =~ "pnpm" ]]; then
   echo "Installing pnpm..."
   if ! run_check_command "mise plugin ls | grep -q 'pnpm'"; then
     run_command "mise plugin install pnpm -y"
@@ -811,14 +811,14 @@ if [[ " ${OTHER_PACKAGES[*]} " =~ "pnpm" ]]; then
 fi
 
 # Install Bun
-if [[ " ${OTHER_PACKAGES[*]} " =~ "bun" ]]; then
+if [[ "${OTHER_PACKAGES[*]}" =~ "bun" ]]; then
   echo "Installing Bun..."
   run_command "mise install bun@latest"
   run_command "mise global bun@latest"
 fi
 
 # Install Go
-if [[ " ${OTHER_PACKAGES[*]} " =~ "go" ]]; then
+if [[ "${OTHER_PACKAGES[*]}" =~ "go" ]]; then
   echo "Installing Go..."
   run_command "mise install go@latest"
   run_command "mise global go@latest"
@@ -828,7 +828,7 @@ fi
 # Install Rust
 # ========================================
 
-if [[ " ${OTHER_PACKAGES[*]} " =~ "rust" ]]; then
+if [[ "${OTHER_PACKAGES[*]}" =~ "rust" ]]; then
   echo "Installing Rustup..."
   if ! command -v rustup &>/dev/null; then
     run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
