@@ -861,7 +861,7 @@ if [ ! -d "$VSCODE_CONFIG_DIR" ]; then
   echo "Creating $VSCODE_CONFIG_DIR directory..."
   mkdir -p "$VSCODE_CONFIG_DIR"
 fi
-run_command "stow -v -d '$DOTFILES_DIR/vscode' -t $VSCODE_CONFIG_DIR config"
+run_command "stow -v -d '$DOTFILES_DIR/vscode' -t '$VSCODE_CONFIG_DIR' config"
 
 echo "Installing VSCode extensions..."
 for extension in "${VSCODE_EXTENSIONS[@]}"; do
