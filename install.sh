@@ -76,7 +76,7 @@ run_command() {
 run_check_command() {
   local command=$1
   eval "$command" >/dev/null 2>&1
-  echo $? >/dev/null
+  return $?
 }
 
 cursor_blink_on() {
