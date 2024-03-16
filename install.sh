@@ -656,7 +656,7 @@ if ! run_check_command "xcode-select -p"; then
   echo "Installing Xcode Command Line Tools..."
   touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
   PROD=$(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
-  softwareupdate -i "$PROD"
+  run_command "softwareupdate -i $PROD" true true
 else
   echo "Xcode Command Line Tools already installed."
 fi
