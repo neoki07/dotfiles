@@ -642,7 +642,7 @@ GH_COMMAND_PATH=$GH_EXTRACTED_DIR/bin/gh
 run_command "curl -L $GH_DISTRIBUTE_URL -o $GH_ZIP_FILE"
 run_command "unzip -o $GH_ZIP_FILE -d $TMPDIR"
 
-if run_check_command "${GH_COMMAND_PATH} auth status | grep -q 'You are not logged into any GitHub hosts.'"; then
+if ${GH_COMMAND_PATH} auth status | grep -q 'You are not logged into any GitHub hosts.'; then
   run_command "${GH_COMMAND_PATH} auth login -w" true true
 else
   echo "You are already logged in to GitHub."
@@ -652,7 +652,7 @@ fi
 # Install Xcode Command Line Tools
 # ========================================
 
-if ! run_check_command "xcode-select -p &>/dev/null"; then
+if ! xcode-select -p &>/dev/null; then
   echo "Installing Xcode Command Line Tools..."
   touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
   PROD=$(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
@@ -775,7 +775,7 @@ for package in "${BREW_PACKAGES[@]}"; do
 done
 
 for cask in "${BREW_CASKS[@]}"; do
-  if run_check_command "brew list --cask | grep -q '^$cask\$'"; then
+  if brew list --cask | grep -q "^$cask\$"; then
     echo "$cask already installed."
   else
     run_command "brew install --cask $cask"
@@ -798,7 +798,7 @@ fi
 # Install pnpm
 if [[ "${OTHER_PACKAGES[*]}" =~ "pnpm" ]]; then
   echo "Installing pnpm..."
-  if ! run_check_command "mise plugin ls | grep -q 'pnpm'"; then
+  if ! mise plugin ls | grep -q pnpm; then
     run_command "mise plugin install pnpm -y"
   fi
   run_command "mise install pnpm@latest"
