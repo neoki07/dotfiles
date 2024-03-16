@@ -59,16 +59,11 @@ run_command() {
   local status
 
   # TODO: Write to log file
-  if [ "$print_stdout" = true ] && [ "$print_stderr" = true ]; then
-    eval "$command"
-  elif [ "$print_stdout" = true ] && [ "$print_stderr" = false ]; then
-    eval "$command" 2>/dev/null
-  else
-    eval "$command" >/dev/null 2>&1
-  fi
+  eval "$command"
 
   status=$?
   if [ "$status" -ne 0 ]; then
+    echo "Command failed: $command"
     exit "$status"
   fi
 }
