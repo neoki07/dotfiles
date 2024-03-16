@@ -642,7 +642,7 @@ GH_COMMAND_PATH=$GH_EXTRACTED_DIR/bin/gh
 run_command "curl -L $GH_DISTRIBUTE_URL -o $GH_ZIP_FILE"
 run_command "unzip -o $GH_ZIP_FILE -d $TMPDIR"
 
-if ${GH_COMMAND_PATH} auth status | grep -q 'You are not logged into any GitHub hosts.'; then
+if ${GH_COMMAND_PATH} auth status 2>&1 | grep -q 'You are not logged into any GitHub hosts.'; then
   run_command "${GH_COMMAND_PATH} auth login -w" true true
 else
   echo "You are already logged in to GitHub."
