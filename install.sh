@@ -642,7 +642,7 @@ GH_COMMAND_PATH=$GH_EXTRACTED_DIR/bin/gh
 run_command "curl -L $GH_DISTRIBUTE_URL -o $GH_ZIP_FILE"
 run_command "unzip -o $GH_ZIP_FILE -d $TMPDIR"
 
-if ${GH_COMMAND_PATH} auth status 2>&1 | grep -q 'You are not logged into any GitHub hosts.'; then
+if run_check_command "${GH_COMMAND_PATH} auth status 2>&1 | grep -q 'You are not logged into any GitHub hosts.'"; then
   run_command "${GH_COMMAND_PATH} auth login -w" true true
 else
   echo "You are already logged in to GitHub."
@@ -652,7 +652,7 @@ fi
 # Install Xcode Command Line Tools
 # ========================================
 
-if ! xcode-select -p &>/dev/null; then
+if ! run_check_command "xcode-select -p"; then
   echo "Installing Xcode Command Line Tools..."
   touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
   PROD=$(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
@@ -749,7 +749,7 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 "
 # Install Homebrew
 # ========================================
 
-if ! command -v brew &>/dev/null; then
+if ! run_check_command "command -v brew"; then
   echo "Installing Homebrew..."
   run_command "NONINTERACTIVE=1 /bin/bash -c $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -825,7 +825,7 @@ fi
 
 if [[ "${OTHER_PACKAGES[*]}" =~ "rust" ]]; then
   echo "Installing Rustup..."
-  if ! command -v rustup &>/dev/null; then
+  if ! run_check_command "command -v rustup"; then
     run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
     # shellcheck source=/dev/null
     source "$HOME/.cargo/env"
@@ -833,7 +833,7 @@ if [[ "${OTHER_PACKAGES[*]}" =~ "rust" ]]; then
     echo "Rustup already installed."
   fi
 
-  if ! command -v rustc &>/dev/null; then
+  if ! run_check_command "command -v rustc"; then
     echo "Installing Rust..."
     run_command "rustup install stable"
     run_command "rustup install nightly"
@@ -854,7 +854,7 @@ defaults write com.microsoft.VSCodeInsiders ApplePressAndHoldEnabled -bool false
 
 echo "Installing stow for creating symlinks..."
 
-if ! command -v stow &>/dev/null; then
+if ! run_check_command "command -v stow"; then
   run_command "brew install stow"
 else
   echo "Stow already installed."
@@ -885,7 +885,7 @@ fi
 
 echo "Installing stow for creating symlinks..."
 
-if ! command -v stow &>/dev/null; then
+if ! run_check_command "command -v stow"; then
   run_command "brew install stow"
 else
   echo "Stow already installed."
