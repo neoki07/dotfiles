@@ -189,9 +189,9 @@ text_prompt() {
   fi
 
   if [[ -z "$input" ]]; then
-    printf "%sNone%s\n" "$STYLE_GRAY" "$STYLE_RESET"
+    printf "%s❯%s %sNone%s\n" "$STYLE_GREEN" "$STYLE_RESET" "$STYLE_GRAY" "$STYLE_RESET"
   else
-    printf "%s%s%s\n" "$STYLE_GRAY" "$input" "$STYLE_RESET"
+    printf "%s❯%s %s%s%s\n" "$STYLE_GREEN" "$STYLE_RESET" "$STYLE_GRAY" "$input" "$STYLE_RESET"
   fi
 
   eval "$retval=$input"
