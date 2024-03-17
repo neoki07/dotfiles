@@ -679,7 +679,7 @@ if [ -d "$DOTFILES_DIR" ]; then
   echo "The dotfiles already cloned."
 else
   echo "Cloning the dotfiles..."
-  "ssh -o StrictHostKeyChecking=no" ${GH_COMMAND_PATH} repo clone neokidev/dotfiles "$DOTFILES_DIR"
+  GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" ${GH_COMMAND_PATH} repo clone neokidev/dotfiles "$DOTFILES_DIR"
 fi
 
 # ========================================
