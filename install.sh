@@ -59,7 +59,21 @@ run_command() {
   local status
 
   # TODO: Write to log file
-  eval "$command"
+  if [ "$print_stdout" = true ] && [ "$print_stderr" = true ]; then
+    eval "$command"
+  fi
+
+  if [ "$print_stdout" = true ] && [ "$print_stderr" = false ]; then
+    eval "$command" 2>/dev/null
+  fi
+
+  if [ "$print_stdout" = false ] && [ "$print_stderr" = true ]; then
+    eval "$command" >/dev/null
+  fi
+
+  if [ "$print_stdout" = false ] && [ "$print_stderr" = false ]; then
+    eval "$command" >/dev/null 2>&1
+  fi
 
   status=$?
   if [ "$status" -ne 0 ]; then
@@ -637,8 +651,8 @@ GH_COMMAND_PATH=$GH_EXTRACTED_DIR/bin/gh
 run_command "curl -L $GH_DISTRIBUTE_URL -o $GH_ZIP_FILE"
 run_command "unzip -o $GH_ZIP_FILE -d $TMPDIR"
 
-if run_check_command "${GH_COMMAND_PATH} auth status 2>&1 | grep -q 'You are not logged into any GitHub hosts.'"; then
-  run_command "${GH_COMMAND_PATH} auth login -w" true true
+if run_check_command "'$GH_COMMAND_PATH' auth status 2>&1 | grep -q 'You are not logged into any GitHub hosts.'"; then
+  run_command "'$GH_COMMAND_PATH' auth login -w" true true
 else
   echo "You are already logged in to GitHub."
 fi
@@ -651,7 +665,7 @@ if ! run_check_command "xcode-select -p"; then
   echo "Installing Xcode Command Line Tools..."
   touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
   PROD=$(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
-  softwareupdate -i "$PROD"
+  run_command "softwareupdate -i '$PROD'"
 else
   echo "Xcode Command Line Tools already installed."
 fi
@@ -665,7 +679,7 @@ if [ -d "$DOTFILES_DIR" ]; then
   echo "The dotfiles already cloned."
 else
   echo "Cloning the dotfiles..."
-  GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" ${GH_COMMAND_PATH} repo clone neokidev/dotfiles "$DOTFILES_DIR"
+  run_command "ssh -o StrictHostKeyChecking=no '$GH_COMMAND_PATH' repo clone neokidev/dotfiles '$DOTFILES_DIR'"
 fi
 
 # ========================================
@@ -746,7 +760,7 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 "
 
 if ! run_check_command "command -v brew"; then
   echo "Installing Homebrew..."
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  run_command "NONINTERACTIVE=1 /bin/bash -c '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)'"
 
   eval "$(/opt/homebrew/bin/brew shellenv)"
 else
@@ -765,7 +779,7 @@ for package in "${BREW_PACKAGES[@]}"; do
   if echo "$INSTALLED_BREW_PACKAGES" | grep -q "^$package\$"; then
     echo "$package already installed."
   else
-    run_command "brew install $package"
+    run_command "brew install '$package'"
   fi
 done
 
@@ -773,7 +787,7 @@ for cask in "${BREW_CASKS[@]}"; do
   if brew list --cask | grep -q "^$cask\$"; then
     echo "$cask already installed."
   else
-    run_command "brew install --cask $cask"
+    run_command "brew install --cask '$cask'"
   fi
 done
 
@@ -865,12 +879,12 @@ run_command "stow -v -d '$DOTFILES_DIR/vscode' -t '$VSCODE_CONFIG_DIR' config"
 
 echo "Installing VSCode extensions..."
 for extension in "${VSCODE_EXTENSIONS[@]}"; do
-  run_command "code --install-extension $extension"
+  run_command "code --install-extension '$extension'"
 done
 
 if [ "$INSTALL_MODE" = "Personal" ]; then
   for extension in "${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}"; do
-    run_command "code --install-extension $extension"
+    run_command "code --install-extension '$extension'"
   done
 fi
 
@@ -897,7 +911,7 @@ fi
 for package_dir in "$DOTFILES_DIR/packages"/*; do
   package_name=$(basename "$package_dir")
   echo "Stowing $package_name..."
-  run_command "stow -v -d '$DOTFILES_DIR/packages' -t ~ $package_name"
+  run_command "stow -v -d '$DOTFILES_DIR/packages' -t ~ '$package_name'"
 done
 
 # ========================================
