@@ -88,6 +88,11 @@ run_check_command() {
   return $?
 }
 
+run_command_() {
+  ("$@" >/dev/null 2>&1) &
+  wait $!
+}
+
 cursor_blink_on() {
   printf "%s[?25h" "$ESC"
 }
@@ -760,7 +765,7 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 "
 
 if ! run_check_command "command -v brew"; then
   echo "Installing Homebrew..."
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" >/dev/null 2>&1
+  run_command_ NONINTERACTIVE=1 curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh >/dev/null 2>&1
 
   eval "$(/opt/homebrew/bin/brew shellenv)"
 else
