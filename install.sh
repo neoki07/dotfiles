@@ -765,7 +765,7 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 "
 
 if ! run_check_command "command -v brew"; then
   echo "Installing Homebrew..."
-  run_command_ NONINTERACTIVE=1 curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh >/dev/null 2>&1
+  NONINTERACTIVE=1 run_command_ curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
 
   eval "$(/opt/homebrew/bin/brew shellenv)"
 else
