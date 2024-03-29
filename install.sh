@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "$OSTYPE" != "darwin"* ]]; then
+  echo "This script is only for macOS."
+  exit 1
+fi
+
 BREW_PACKAGE_OPTIONS=("fzf" "git" "mise" "neovim" "starship")
 BREW_PERSONAL_PACKAGE_OPTIONS=("golang-migrate" "sqlc" "wasm-pack")
 
@@ -750,9 +755,21 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 "
 </dict>"
 
 # Finder settings
+defaults write NSGlobalDomain "AppleShowAllExtensions" -bool "true"
+defaults write com.apple.Finder "AppleShowAllFiles" -bool "true"
+defaults write com.apple.finder ShowPathbar -bool "true"
 /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
 /usr/libexec/PlistBuddy -c "Set :FK_StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
 /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
+
+# Dock settings
+defaults write com.apple.dock persistent-apps -array
+defaults write com.apple.dock "tilesize" -int "36"
+defaults write com.apple.dock "show-recents" -bool "false"
+
+# Feedback settings
+defaults write com.apple.appleseed.FeedbackAssistant "Autogather" -bool "false"
+defaults write com.apple.CrashReporter DialogType -string "none"
 
 # ========================================
 # Install Homebrew
