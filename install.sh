@@ -89,7 +89,7 @@ run_check_command() {
 }
 
 run_command_() {
-  ("$@" >/dev/null 2>&1) &
+  ("$@") &
   wait $!
 }
 
