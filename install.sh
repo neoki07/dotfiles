@@ -89,8 +89,8 @@ run_check_command() {
 }
 
 run_command_() {
-  ("$@") &
-  wait $!
+  local command=$1
+  eval "$command"
 }
 
 cursor_blink_on() {
