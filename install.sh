@@ -806,12 +806,11 @@ defaults write com.apple.CrashReporter DialogType -string "none"
 # ========================================
 
 if ! run_check_command "command -v brew"; then
-  echo "Installing Homebrew..."
   (NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" >/dev/null 2>&1) &
   PID=$!
 
   wait_for_process_to_finish "$PID" "Installing Homebrew" "Homebrew installed."
-  wait $PID
+  wait "$PID"
 
   eval "$(/opt/homebrew/bin/brew shellenv)"
 else
@@ -830,7 +829,11 @@ for package in "${BREW_PACKAGES[@]}"; do
   if echo "$INSTALLED_BREW_PACKAGES" | grep -q "^$package\$"; then
     echo "$package already installed."
   else
-    run_command "brew install '$package'"
+    (run_command "brew install '$package'") &
+    PID=$!
+
+    wait_for_process_to_finish "$PID" "Installing $package" "$package installed."
+    wait "$PID"
   fi
 done
 
