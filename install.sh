@@ -876,7 +876,7 @@ echo "Setting up VSCode..."
 
 # Enable key repeat
 # Reference: https://marketplace.visualstudio.com/items?itemName=vscodevim.vim
-defaults write com.microsoft.VSCodeInsiders ApplePressAndHoldEnabled -bool false
+defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
 
 echo "Installing stow for creating symlinks..."
 
