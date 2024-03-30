@@ -808,7 +808,6 @@ defaults write com.apple.CrashReporter DialogType -string "none"
 if ! run_check_command "command -v brew"; then
   (NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" >/dev/null 2>&1) &
   PID=$!
-
   wait_for_process_to_finish "$PID" "Installing Homebrew" "Homebrew installed."
   wait "$PID"
 
@@ -831,7 +830,6 @@ for package in "${BREW_PACKAGES[@]}"; do
   else
     (run_command "brew install '$package'") &
     PID=$!
-
     wait_for_process_to_finish "$PID" "Installing $STYLE_BOLD$package$STYLE_RESET" "$STYLE_BOLD$package$STYLE_RESET installed."
     wait "$PID"
   fi
@@ -843,7 +841,6 @@ for cask in "${BREW_CASKS[@]}"; do
   else
     (run_command "brew install --cask '$cask'") &
     PID=$!
-
     wait_for_process_to_finish "$PID" "Installing $STYLE_BOLD$cask$STYLE_RESET" "$STYLE_BOLD$cask$STYLE_RESET installed."
     wait "$PID"
   fi
@@ -857,33 +854,40 @@ echo "Installing packages with mise..."
 
 # Install Node.js
 if [[ "${OTHER_PACKAGES[*]}" =~ "nodejs" ]]; then
-  echo "Installing Node.js..."
-  run_command "mise install nodejs@latest"
-  run_command "mise global nodejs@latest"
+  (run_command "mise install nodejs@latest && mise global nodejs@latest") &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Installing Node.js" "Node.js installed."
+  wait "$PID"
 fi
 
 # Install pnpm
 if [[ "${OTHER_PACKAGES[*]}" =~ "pnpm" ]]; then
-  echo "Installing pnpm..."
   if ! mise plugin ls | grep -q pnpm; then
-    run_command "mise plugin install pnpm -y"
+    (run_command "mise plugin install pnpm -y") &
+    PID=$!
+    wait_for_process_to_finish "$PID" "Installing pnpm" "pnpm installed."
+    wait "$PID"
   fi
-  run_command "mise install pnpm@latest"
-  run_command "mise global pnpm@latest"
+  (run_command "mise install pnpm@latest && mise global pnpm@latest") &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Installing pnpm" "pnpm installed."
+  wait "$PID"
 fi
 
 # Install Bun
 if [[ "${OTHER_PACKAGES[*]}" =~ "bun" ]]; then
-  echo "Installing Bun..."
-  run_command "mise install bun@latest"
-  run_command "mise global bun@latest"
+  (run_command "mise install bun@latest && mise global bun@latest") &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Installing Bun" "Bun installed."
+  wait "$PID"
 fi
 
 # Install Go
 if [[ "${OTHER_PACKAGES[*]}" =~ "go" ]]; then
-  echo "Installing Go..."
-  run_command "mise install go@latest"
-  run_command "mise global go@latest"
+  (run_command "mise install go@latest && mise global go@latest") &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Installing Go" "Go installed."
+  wait "$PID"
 fi
 
 # ========================================
