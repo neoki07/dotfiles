@@ -157,7 +157,7 @@ wait_for_process_to_finish() {
   done
 
   clear_line
-  print_result "$done_message"
+  printf "$STYLE_GREEN%s$STYLE_RESET $done_message\n" "✔"
 
   cursor_blink_on
   stty echo
