@@ -832,7 +832,7 @@ for package in "${BREW_PACKAGES[@]}"; do
     (run_command "brew install '$package'") &
     PID=$!
 
-    wait_for_process_to_finish "$PID" "Installing $package" "$package installed."
+    wait_for_process_to_finish "$PID" "Installing $STYLE_BOLD$package$STYLE_RESET" "$STYLE_BOLD$package$STYLE_RESET installed."
     wait "$PID"
   fi
 done
@@ -841,7 +841,11 @@ for cask in "${BREW_CASKS[@]}"; do
   if brew list --cask | grep -q "^$cask\$"; then
     echo "$cask already installed."
   else
-    run_command "brew install --cask '$cask'"
+    (run_command "brew install --cask '$cask'") &
+    PID=$!
+
+    wait_for_process_to_finish "$PID" "Installing $STYLE_BOLD$cask$STYLE_RESET" "$STYLE_BOLD$cask$STYLE_RESET installed."
+    wait "$PID"
   fi
 done
 
