@@ -105,6 +105,10 @@ cursor_to() {
   printf "%s[$1;${2:-1}H" "$ESC"
 }
 
+cursor_to_line_start() {
+  printf "\r"
+}
+
 clear_line() {
   printf "\r%s[K" "$ESC"
 }
@@ -131,6 +135,32 @@ print_question() {
 print_warning() {
   local warning=$1
   echo "$STYLE_YELLOW! $warning$STYLE_RESET"
+}
+
+wait_for_process_to_finish() {
+  local pid=$1
+  local waiting_message=$2
+  local done_message=$3
+  local delay=0.05
+  local spinstr='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+
+  cursor_blink_off
+  stty -echo
+
+  while ps -p "$pid" >/dev/null; do
+    i=$(((i + 1) % 10))
+
+    printf "%s%s%s %s..." "$STYLE_CYAN" "${spinstr:$i:1}" "$STYLE_RESET" "$waiting_message"
+    sleep $delay
+
+    cursor_to_line_start
+  done
+
+  clear_line
+  print_result "$done_message"
+
+  cursor_blink_on
+  stty echo
 }
 
 text_prompt() {
@@ -777,7 +807,11 @@ defaults write com.apple.CrashReporter DialogType -string "none"
 
 if ! run_check_command "command -v brew"; then
   echo "Installing Homebrew..."
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  (NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" >/dev/null 2>&1) &
+  PID=$!
+
+  wait_for_process_to_finish "$PID" "Installing Homebrew" "Homebrew installed."
+  wait $PID
 
   eval "$(/opt/homebrew/bin/brew shellenv)"
 else
