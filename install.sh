@@ -901,7 +901,6 @@ fi
 # ========================================
 
 if [[ "${OTHER_PACKAGES[*]}" =~ "rust" ]]; then
-  echo "Installing Rustup..."
   if ! run_check_command "command -v rustup"; then
     (run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y") &
     PID=$!
@@ -939,21 +938,23 @@ echo "Setting up VSCode..."
 # Reference: https://marketplace.visualstudio.com/items?itemName=vscodevim.vim
 defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
 
-echo "Installing stow for creating symlinks..."
-
 if ! run_check_command "command -v stow"; then
-  run_command "brew install stow"
+  (run_command "brew install stow") &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Installing stow" "Stow installed."
+  wait "$PID"
 else
   echo "Stow already installed."
 fi
 
-echo "Creating symlinks for VSCode configuration..."
 VSCODE_CONFIG_DIR="$HOME/Library/Application Support/Code/User"
 if [ ! -d "$VSCODE_CONFIG_DIR" ]; then
-  echo "Creating $VSCODE_CONFIG_DIR directory..."
   mkdir -p "$VSCODE_CONFIG_DIR"
 fi
-run_command "stow -v -d '$DOTFILES_DIR/vscode' -t '$VSCODE_CONFIG_DIR' config"
+(run_command "stow -v -d '$DOTFILES_DIR/vscode' -t '$VSCODE_CONFIG_DIR' config") &
+PID=$!
+wait_for_process_to_finish "$PID" "Stowing VSCode configuration" "VSCode configuration stowed."
+wait "$PID"
 
 echo "Installing VSCode extensions..."
 for extension in "${VSCODE_EXTENSIONS[@]}"; do
