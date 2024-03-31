@@ -689,10 +689,7 @@ wait_for_process_to_finish "$PID" "Downloading GitHub CLI" "GitHub CLI downloade
 wait "$PID"
 
 if run_check_command "'$GH_COMMAND_PATH' auth status 2>&1 | grep -q 'You are not logged into any GitHub hosts.'"; then
-  (run_command "'$GH_COMMAND_PATH' auth login -w" true true) &
-  PID=$!
-  wait_for_process_to_finish "$PID" "Logging in to GitHub" "Logged in to GitHub."
-  wait "$PID"
+  run_command "'$GH_COMMAND_PATH' auth login -w" true true
 else
   echo "You are already logged in to GitHub."
 fi
