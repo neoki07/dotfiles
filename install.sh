@@ -713,7 +713,6 @@ DOTFILES_DIR="$DOTFILES_PARENT_DIR/dotfiles"
 if [ -d "$DOTFILES_DIR" ]; then
   echo "The dotfiles already cloned."
 else
-  echo "Cloning the dotfiles..."
   (ssh -o StrictHostKeyChecking=no "${GH_COMMAND_PATH}" repo clone neokidev/dotfiles "$DOTFILES_DIR" >/dev/null 2>&1) &
   PID=$!
   wait_for_process_to_finish "$PID" "Cloning the dotfiles" "The dotfiles cloned."
