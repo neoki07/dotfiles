@@ -137,6 +137,11 @@ print_warning() {
   echo "$STYLE_YELLOW! $warning$STYLE_RESET"
 }
 
+print_info() {
+  local info=$1
+  printf "$STYLE_YELLOW%s$STYLE_RESET $info\n" "!"
+}
+
 wait_for_process_to_finish() {
   local pid=$1
   local waiting_message=$2
@@ -691,7 +696,7 @@ wait "$PID"
 if run_check_command "'$GH_COMMAND_PATH' auth status 2>&1 | grep -q 'You are not logged into any GitHub hosts.'"; then
   run_command "'$GH_COMMAND_PATH' auth login -w" true true
 else
-  echo "You are already logged in to GitHub."
+  print_info "You are already logged in to GitHub."
 fi
 
 # ========================================
@@ -706,7 +711,7 @@ if ! run_check_command "xcode-select -p"; then
   wait_for_process_to_finish "$PID" "Installing Xcode Command Line Tools" "Xcode Command Line Tools installed."
   wait "$PID"
 else
-  echo "Xcode Command Line Tools already installed."
+  print_info "Xcode Command Line Tools already installed."
 fi
 
 # ========================================
@@ -715,7 +720,7 @@ fi
 
 DOTFILES_DIR="$DOTFILES_PARENT_DIR/dotfiles"
 if [ -d "$DOTFILES_DIR" ]; then
-  echo "The dotfiles already cloned."
+  print_info "The dotfiles already cloned."
 else
   (GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" "${GH_COMMAND_PATH}" repo clone neokidev/dotfiles "$DOTFILES_DIR") &
   PID=$!
@@ -819,7 +824,7 @@ if ! run_check_command "command -v brew"; then
 
   eval "$(/opt/homebrew/bin/brew shellenv)"
 else
-  echo "Homebrew already installed."
+  print_info "Homebrew already installed."
 fi
 
 # ========================================
@@ -832,7 +837,7 @@ INSTALLED_BREW_PACKAGES=$(brew list)
 
 for package in "${BREW_PACKAGES[@]}"; do
   if echo "$INSTALLED_BREW_PACKAGES" | grep -q "^$package\$"; then
-    echo "$package already installed."
+    print_info "$package already installed."
   else
     (run_command "brew install '$package'") &
     PID=$!
@@ -843,7 +848,7 @@ done
 
 for cask in "${BREW_CASKS[@]}"; do
   if brew list --cask | grep -q "^$cask\$"; then
-    echo "$cask already installed."
+    print_info "$cask already installed."
   else
     (run_command "brew install --cask '$cask'") &
     PID=$!
@@ -910,7 +915,7 @@ if [[ "${OTHER_PACKAGES[*]}" =~ "rust" ]]; then
     # shellcheck source=/dev/null
     source "$HOME/.cargo/env"
   else
-    echo "Rustup already installed."
+    print_info "Rustup already installed."
   fi
 
   if ! run_check_command "command -v rustc"; then
@@ -924,7 +929,7 @@ if [[ "${OTHER_PACKAGES[*]}" =~ "rust" ]]; then
     wait_for_process_to_finish "$PID" "Installing Rust nightly" "Rust nightly installed."
     wait "$PID"
   else
-    echo "Rust is already installed."
+    print_info "Rust is already installed."
   fi
 fi
 
@@ -944,7 +949,7 @@ if ! run_check_command "command -v stow"; then
   wait_for_process_to_finish "$PID" "Installing stow" "Stow installed."
   wait "$PID"
 else
-  echo "Stow already installed."
+  print_info "Stow already installed."
 fi
 
 VSCODE_CONFIG_DIR="$HOME/Library/Application Support/Code/User"
@@ -985,14 +990,13 @@ if ! run_check_command "command -v stow"; then
   wait_for_process_to_finish "$PID" "Installing stow" "Stow installed."
   wait "$PID"
 else
-  echo "Stow already installed."
+  print_info "Stow already installed."
 fi
 
 echo "Creating symlinks..."
 
 CONFIG_DIR="$HOME/.config"
 if [ ! -d "$CONFIG_DIR" ]; then
-  echo "Creating $CONFIG_DIR directory..."
   mkdir -p "$CONFIG_DIR"
 fi
 
@@ -1017,5 +1021,5 @@ if [ "$SHOULD_REBOOT" = true ]; then
   echo "Rebooting the system..."
   echo "$PASSWORD" | sudo -S reboot 2>/dev/null
 else
-  echo "Please reboot the system to apply the changes."
+  print_warning "Please reboot the system to apply the changes."
 fi
