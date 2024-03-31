@@ -683,11 +683,16 @@ GH_EXTRACTED_DIR=$TMPDIR/$(basename "$GH_DISTRIBUTE_URL" .zip)
 GH_ZIP_FILE=$GH_EXTRACTED_DIR.zip
 GH_COMMAND_PATH=$GH_EXTRACTED_DIR/bin/gh
 
-run_command "curl -L $GH_DISTRIBUTE_URL -o $GH_ZIP_FILE"
-run_command "unzip -o $GH_ZIP_FILE -d $TMPDIR"
+(run_command "curl -L $GH_DISTRIBUTE_URL -o $GH_ZIP_FILE && unzip -o $GH_ZIP_FILE -d $TMPDIR") &
+PID=$!
+wait_for_process_to_finish "$PID" "Downloading GitHub CLI" "GitHub CLI downloaded."
+wait "$PID"
 
 if run_check_command "'$GH_COMMAND_PATH' auth status 2>&1 | grep -q 'You are not logged into any GitHub hosts.'"; then
-  run_command "'$GH_COMMAND_PATH' auth login -w" true true
+  (run_command "'$GH_COMMAND_PATH' auth login -w" true true) &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Logging in to GitHub" "Logged in to GitHub."
+  wait "$PID"
 else
   echo "You are already logged in to GitHub."
 fi
@@ -697,10 +702,12 @@ fi
 # ========================================
 
 if ! run_check_command "xcode-select -p"; then
-  echo "Installing Xcode Command Line Tools..."
   touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
   PROD=$(softwareupdate -l | grep "\*.*Command Line" | tail -n 1 | sed 's/^[^C]* //')
-  run_command "softwareupdate -i '$PROD'"
+  (run_command "softwareupdate -i '$PROD'") &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Installing Xcode Command Line Tools" "Xcode Command Line Tools installed."
+  wait "$PID"
 else
   echo "Xcode Command Line Tools already installed."
 fi
@@ -713,7 +720,10 @@ DOTFILES_DIR="$DOTFILES_PARENT_DIR/dotfiles"
 if [ -d "$DOTFILES_DIR" ]; then
   echo "The dotfiles already cloned."
 else
-  "${GH_COMMAND_PATH}" repo clone neokidev/dotfiles "$DOTFILES_DIR"
+  (GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" "${GH_COMMAND_PATH}" repo clone neokidev/dotfiles "$DOTFILES_DIR") &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Cloning dotfiles" "Dotfiles cloned."
+  wait "$PID"
 fi
 
 # ========================================
