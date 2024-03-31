@@ -856,7 +856,7 @@ echo "Installing packages with mise..."
 if [[ "${OTHER_PACKAGES[*]}" =~ "nodejs" ]]; then
   (run_command "mise install nodejs@latest && mise global nodejs@latest") &
   PID=$!
-  wait_for_process_to_finish "$PID" "Installing Node.js" "Node.js installed."
+  wait_for_process_to_finish "$PID" "Installing ${STYLE_BOLD}Node.js$STYLE_RESET" "${STYLE_BOLD}Node.js$STYLE_RESET installed."
   wait "$PID"
 fi
 
@@ -865,7 +865,7 @@ if [[ "${OTHER_PACKAGES[*]}" =~ "pnpm" ]]; then
   if ! mise plugin ls | grep -q pnpm; then
     (run_command "mise plugin install pnpm -y") &
     PID=$!
-    wait_for_process_to_finish "$PID" "Installing pnpm" "pnpm installed."
+    wait_for_process_to_finish "$PID" "Installing pnpm plugin for mise" "pnpm plugin for mise installed."
     wait "$PID"
   fi
   (run_command "mise install pnpm@latest && mise global pnpm@latest") &
@@ -897,7 +897,11 @@ fi
 if [[ "${OTHER_PACKAGES[*]}" =~ "rust" ]]; then
   echo "Installing Rustup..."
   if ! run_check_command "command -v rustup"; then
-    run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+    (run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y") &
+    PID=$!
+    wait_for_process_to_finish "$PID" "Installing Rustup" "Rustup installed."
+    wait "$PID"
+
     # shellcheck source=/dev/null
     source "$HOME/.cargo/env"
   else
@@ -905,9 +909,15 @@ if [[ "${OTHER_PACKAGES[*]}" =~ "rust" ]]; then
   fi
 
   if ! run_check_command "command -v rustc"; then
-    echo "Installing Rust..."
-    run_command "rustup install stable"
-    run_command "rustup install nightly"
+    (run_command "rustup install stable") &
+    PID=$!
+    wait_for_process_to_finish "$PID" "Installing Rust stable" "Rust stable installed."
+    wait "$PID"
+
+    (run_command "rustup install nightly") &
+    PID=$!
+    wait_for_process_to_finish "$PID" "Installing Rust nightly" "Rust nightly installed."
+    wait "$PID"
   else
     echo "Rust is already installed."
   fi
@@ -941,12 +951,18 @@ run_command "stow -v -d '$DOTFILES_DIR/vscode' -t '$VSCODE_CONFIG_DIR' config"
 
 echo "Installing VSCode extensions..."
 for extension in "${VSCODE_EXTENSIONS[@]}"; do
-  run_command "code --install-extension '$extension'"
+  (run_command "code --install-extension '$extension'") &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Installing $STYLE_BOLD$extension$STYLE_RESET" "$STYLE_BOLD$extension$STYLE_RESET installed."
+  wait "$PID"
 done
 
 if [ "$INSTALL_MODE" = "Personal" ]; then
   for extension in "${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}"; do
-    run_command "code --install-extension '$extension'"
+    (run_command "code --install-extension '$extension'") &
+    PID=$!
+    wait_for_process_to_finish "$PID" "Installing $STYLE_BOLD$extension$STYLE_RESET" "$STYLE_BOLD$extension$STYLE_RESET installed."
+    wait "$PID"
   done
 fi
 
@@ -957,7 +973,10 @@ fi
 echo "Installing stow for creating symlinks..."
 
 if ! run_check_command "command -v stow"; then
-  run_command "brew install stow"
+  (run_command "brew install stow") &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Installing stow" "Stow installed."
+  wait "$PID"
 else
   echo "Stow already installed."
 fi
@@ -972,8 +991,10 @@ fi
 
 for package_dir in "$DOTFILES_DIR/packages"/*; do
   package_name=$(basename "$package_dir")
-  echo "Stowing $package_name..."
-  run_command "stow -v -d '$DOTFILES_DIR/packages' -t ~ '$package_name'"
+  (run_command "stow -v -d '$DOTFILES_DIR/packages' -t ~ '$package_name'") &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Stowing $STYLE_BOLD$package_name$STYLE_RESET" "$STYLE_BOLD$package_name$STYLE_RESET stowed."
+  wait "$PID"
 done
 
 # ========================================
