@@ -714,7 +714,10 @@ if [ -d "$DOTFILES_DIR" ]; then
   echo "The dotfiles already cloned."
 else
   echo "Cloning the dotfiles..."
-  GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" ${GH_COMMAND_PATH} repo clone neokidev/dotfiles "$DOTFILES_DIR"
+  (run_command "ssh -o StrictHostKeyChecking=no '${GH_COMMAND_PATH}' repo clone neokidev/dotfiles '$DOTFILES_DIR'") &
+  PID=$!
+  wait_for_process_to_finish "$PID" "Cloning the dotfiles" "The dotfiles cloned."
+  wait "$PID"
 fi
 
 # ========================================
