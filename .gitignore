@@ -13,8 +13,8 @@
 !/packages/zsh/.zshrc
 !/raycast/Raycast.rayconfig
 !/vscode/config/settings.json
-!/vscode/extensions
 !/vscode/extensions-personal
+!/vscode/extensions-work
 
 !README.md
 !.gitignore

@@ -5,22 +5,22 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
   exit 1
 fi
 
-BREW_PACKAGE_OPTIONS=("fzf" "git" "mise" "neovim" "starship")
+BREW_WORK_PACKAGE_OPTIONS=("fzf" "git" "mise" "neovim" "starship")
 BREW_PERSONAL_PACKAGE_OPTIONS=("golang-migrate" "sqlc" "wasm-pack")
 
-BREW_CASK_OPTIONS=("arc" "brave-browser" "brewlet" "orbstack" "raycast" "slack" "tableplus" "visual-studio-code" "warp")
-BREW_PERSONAL_CASK_OPTIONS=("1password" "discord" "figma" "jetbrains-toolbox" "min" "notion" "obsidian" "spotify")
+BREW_WORK_CASK_OPTIONS=("brewlet" "figma" "gather" "notion" "orbstack" "raycast" "tableplus" "visual-studio-code" "warp")
+BREW_PERSONAL_CASK_OPTIONS=("1password" "arc" "brave-browser" "brewlet" "discord" "figma" "jetbrains-toolbox" "min" "notion" "obsidian" "orbstack" "raycast" "slack" "spotify" "tableplus" "visual-studio-code" "warp")
 
-OTHER_PACKAGE_OPTIONS=("nodejs" "pnpm" "bun" "go" "rust")
-OTHER_PERSONAL_PACKAGE_OPTIONS=()
+OTHER_WORK_PACKAGE_OPTIONS=("nodejs" "pnpm")
+OTHER_PERSONAL_PACKAGE_OPTIONS=("nodejs" "pnpm" "bun" "go" "rust")
 
-VSCODE_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions"
+VSCODE_WORK_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions"
 VSCODE_PERSONAL_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions-personal"
 
-VSCODE_EXTENSION_OPTIONS=()
+VSCODE_WORK_EXTENSION_OPTIONS=()
 while read -r line; do
-  VSCODE_EXTENSION_OPTIONS+=("$line")
-done < <(curl -s "$VSCODE_EXTENSIONS_REMOTE_FILE")
+  VSCODE_WORK_EXTENSION_OPTIONS+=("$line")
+done < <(curl -s "$VSCODE_WORK_EXTENSIONS_REMOTE_FILE")
 
 VSCODE_PERSONAL_EXTENSION_OPTIONS=()
 while read -r line; do
@@ -616,7 +616,8 @@ while true; do
 done
 
 print_question "Which mode do you want to use for the installation?"
-select_prompt INSTALL_MODE "Personal;Work;Custom"
+# select_prompt INSTALL_MODE "Personal;Work;Custom"
+select_prompt INSTALL_MODE "Personal;Work"
 printf "\n"
 
 BREW_PACKAGES=()
@@ -625,55 +626,33 @@ OTHER_PACKAGES=()
 VSCODE_EXTENSIONS=()
 
 if [ "$INSTALL_MODE" = "Personal" ]; then
-  BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}" "${BREW_PERSONAL_PACKAGE_OPTIONS[@]}")
-  BREW_CASKS=("${BREW_CASK_OPTIONS[@]}" "${BREW_PERSONAL_CASK_OPTIONS[@]}")
-  OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}" "${OTHER_PERSONAL_PACKAGE_OPTIONS[@]}")
-  VSCODE_EXTENSIONS=("${VSCODE_EXTENSION_OPTIONS[@]}" "${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}")
+  BREW_PACKAGES=("${BREW_PERSONAL_PACKAGE_OPTIONS[@]}")
+  BREW_CASKS=("${BREW_PERSONAL_CASK_OPTIONS[@]}")
+  OTHER_PACKAGES=("${OTHER_PERSONAL_PACKAGE_OPTIONS[@]}")
+  VSCODE_EXTENSIONS=("${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}")
 elif [ "$INSTALL_MODE" = "Work" ]; then
-  BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}")
-  BREW_CASKS=("${BREW_CASK_OPTIONS[@]}")
-  OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}")
-  VSCODE_EXTENSIONS=("${VSCODE_EXTENSION_OPTIONS[@]}")
-elif [ "$INSTALL_MODE" = "Custom" ]; then
-  MERGED_BREW_PACKAGE_OPTIONS=("${BREW_PACKAGE_OPTIONS[@]}" "${BREW_PERSONAL_PACKAGE_OPTIONS[@]}")
-  BREW_PACKAGE_OPTIONS_STRING=$(
-    IFS=';'
-    echo "${MERGED_BREW_PACKAGE_OPTIONS[*]}"
-  )
+  BREW_PACKAGES=("${BREW_WORK_PACKAGE_OPTIONS[@]}")
+  BREW_CASKS=("${BREW_WORK_CASK_OPTIONS[@]}")
+  OTHER_PACKAGES=("${OTHER_WORK_PACKAGE_OPTIONS[@]}")
+  VSCODE_EXTENSIONS=("${VSCODE_WORK_EXTENSION_OPTIONS[@]}")
+# elif [ "$INSTALL_MODE" = "Custom" ]; then
+#   ...
 
-  MERGED_BREW_CASK_OPTIONS=("${BREW_CASK_OPTIONS[@]}" "${BREW_PERSONAL_CASK_OPTIONS[@]}")
-  BREW_CASK_OPTIONS_STRING=$(
-    IFS=';'
-    echo "${MERGED_BREW_CASK_OPTIONS[*]}"
-  )
+#   print_question "Which brew packages do you want to install?"
+#   multiselect_prompt BREW_PACKAGES "$BREW_WORK_PACKAGE_OPTIONS_STRING" true
+#   printf "\n"
 
-  MERGED_OTHER_PACKAGE_OPTIONS=("${OTHER_PACKAGE_OPTIONS[@]}" "${OTHER_PERSONAL_PACKAGE_OPTIONS[@]}")
-  OTHER_PACKAGE_OPTIONS_STRING=$(
-    IFS=';'
-    echo "${MERGED_OTHER_PACKAGE_OPTIONS[*]}"
-  )
+#   print_question "Which brew applications do you want to install?"
+#   multiselect_prompt BREW_CASKS "$BREW_WORK_CASK_OPTIONS_STRING" true
+#   printf "\n"
 
-  MERGED_VSCODE_EXTENSION_OPTIONS=("${VSCODE_EXTENSION_OPTIONS[@]}" "${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}")
-  VSCODE_EXTENSION_OPTIONS_STRING=$(
-    IFS=';'
-    echo "${MERGED_VSCODE_EXTENSION_OPTIONS[*]}"
-  )
+#   print_question "Which other packages do you want to install?"
+#   multiselect_prompt OTHER_PACKAGES "$OTHER_WORK_PACKAGE_OPTIONS_STRING" true
+#   printf "\n"
 
-  print_question "Which brew packages do you want to install?"
-  multiselect_prompt BREW_PACKAGES "$BREW_PACKAGE_OPTIONS_STRING" true
-  printf "\n"
-
-  print_question "Which brew applications do you want to install?"
-  multiselect_prompt BREW_CASKS "$BREW_CASK_OPTIONS_STRING" true
-  printf "\n"
-
-  print_question "Which other packages do you want to install?"
-  multiselect_prompt OTHER_PACKAGES "$OTHER_PACKAGE_OPTIONS_STRING" true
-  printf "\n"
-
-  print_question "Which VSCode extensions do you want to install?"
-  multiselect_prompt VSCODE_EXTENSIONS "$VSCODE_EXTENSION_OPTIONS_STRING" true
-  printf "\n"
+#   print_question "Which VSCode extensions do you want to install?"
+#   multiselect_prompt VSCODE_EXTENSIONS "$VSCODE_WORK_EXTENSION_OPTIONS_STRING" true
+#   printf "\n"
 else
   echo "Invalid mode: $INSTALL_MODE"
   exit 1
