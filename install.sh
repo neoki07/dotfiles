@@ -876,12 +876,12 @@ if [[ "${OTHER_PACKAGES[*]}" =~ "pnpm" ]]; then
   if ! mise plugin ls | grep -q pnpm; then
     (run_command "mise plugin install pnpm -y") &
     PID=$!
-    wait_for_process_to_finish "$PID" "Installing pnpm plugin for mise" "pnpm plugin for mise installed."
+    wait_for_process_to_finish "$PID" "Installing ${STYLE_BOLD}mise pnpm plugin${STYLE_RESET}" "${STYLE_BOLD}mise pnpm plugin${STYLE_RESET} installed."
     wait "$PID"
   fi
   (run_command "mise install pnpm@latest && mise global pnpm@latest") &
   PID=$!
-  wait_for_process_to_finish "$PID" "Installing pnpm" "pnpm installed."
+  wait_for_process_to_finish "$PID" "Installing ${STYLE_BOLD}pnpm${STYLE_RESET}" "${STYLE_BOLD}pnpm${STYLE_RESET} installed."
   wait "$PID"
 fi
 
@@ -889,7 +889,7 @@ fi
 if [[ "${OTHER_PACKAGES[*]}" =~ "bun" ]]; then
   (run_command "mise install bun@latest && mise global bun@latest") &
   PID=$!
-  wait_for_process_to_finish "$PID" "Installing Bun" "Bun installed."
+  wait_for_process_to_finish "$PID" "Installing ${STYLE_BOLD}Bun${STYLE_RESET}" "${STYLE_BOLD}Bun${STYLE_RESET} installed."
   wait "$PID"
 fi
 
@@ -897,7 +897,7 @@ fi
 if [[ "${OTHER_PACKAGES[*]}" =~ "go" ]]; then
   (run_command "mise install go@latest && mise global go@latest") &
   PID=$!
-  wait_for_process_to_finish "$PID" "Installing Go" "Go installed."
+  wait_for_process_to_finish "$PID" "Installing ${STYLE_BOLD}Go${STYLE_RESET}" "${STYLE_BOLD}Go${STYLE_RESET} installed."
   wait "$PID"
 fi
 
@@ -909,27 +909,27 @@ if [[ "${OTHER_PACKAGES[*]}" =~ "rust" ]]; then
   if ! run_check_command "command -v rustup"; then
     (run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y") &
     PID=$!
-    wait_for_process_to_finish "$PID" "Installing Rustup" "Rustup installed."
+    wait_for_process_to_finish "$PID" "Installing ${STYLE_BOLD}Rustup${STYLE_RESET}" "${STYLE_BOLD}Rustup${STYLE_RESET} installed."
     wait "$PID"
 
     # shellcheck source=/dev/null
     source "$HOME/.cargo/env"
   else
-    print_info "Rustup already installed."
+    print_info "${STYLE_BOLD}Rustup${STYLE_RESET} already installed."
   fi
 
   if ! run_check_command "command -v rustc"; then
     (run_command "rustup install stable") &
     PID=$!
-    wait_for_process_to_finish "$PID" "Installing Rust stable" "Rust stable installed."
+    wait_for_process_to_finish "$PID" "Installing ${STYLE_BOLD}Rust stable${STYLE_RESET}" "${STYLE_BOLD}Rust stable${STYLE_RESET} installed."
     wait "$PID"
 
     (run_command "rustup install nightly") &
     PID=$!
-    wait_for_process_to_finish "$PID" "Installing Rust nightly" "Rust nightly installed."
+    wait_for_process_to_finish "$PID" "Installing ${STYLE_BOLD}Rust nightly${STYLE_RESET}" "${STYLE_BOLD}Rust nightly${STYLE_RESET} installed."
     wait "$PID"
   else
-    print_info "Rust is already installed."
+    print_info "${STYLE_BOLD}Rust${STYLE_RESET} is already installed."
   fi
 fi
 
@@ -946,10 +946,10 @@ defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
 if ! run_check_command "command -v stow"; then
   (run_command "brew install stow") &
   PID=$!
-  wait_for_process_to_finish "$PID" "Installing stow" "Stow installed."
+  wait_for_process_to_finish "$PID" "Installing ${STYLE_BOLD}stow${STYLE_RESET}" "${STYLE_BOLD}Stow${STYLE_RESET} installed."
   wait "$PID"
 else
-  print_info "Stow already installed."
+  print_info "${STYLE_BOLD}Stow${STYLE_RESET} already installed."
 fi
 
 VSCODE_CONFIG_DIR="$HOME/Library/Application Support/Code/User"
@@ -987,10 +987,10 @@ echo "Installing stow for creating symlinks..."
 if ! run_check_command "command -v stow"; then
   (run_command "brew install stow") &
   PID=$!
-  wait_for_process_to_finish "$PID" "Installing stow" "Stow installed."
+  wait_for_process_to_finish "$PID" "Installing ${STYLE_BOLD}stow${STYLE_RESET}" "${STYLE_BOLD}Stow${STYLE_RESET} installed."
   wait "$PID"
 else
-  print_info "Stow already installed."
+  print_info "${STYLE_BOLD}Stow${STYLE_RESET} already installed."
 fi
 
 echo "Creating symlinks..."
