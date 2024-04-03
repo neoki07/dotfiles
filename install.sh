@@ -984,6 +984,9 @@ for package_dir in "$DOTFILES_DIR/packages"/*; do
 
   if [ "$package_name" = "git" ]; then
     GIT_CONFIG_DIR="$HOME/.config/git"
+    if [ ! -d "$GIT_CONFIG_DIR" ]; then
+      mkdir -p "$GIT_CONFIG_DIR"
+    fi
     (run_command "stow -v -d '$DOTFILES_DIR/packages' -t $GIT_CONFIG_DIR $package_name") &
     PID=$!
   else
