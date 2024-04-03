@@ -981,9 +981,17 @@ fi
 
 for package_dir in "$DOTFILES_DIR/packages"/*; do
   package_name=$(basename "$package_dir")
-  (run_command "stow -v -d '$DOTFILES_DIR/packages' -t ~ '$package_name'") &
-  PID=$!
-  wait_for_process_to_finish "$PID" "Stowing $STYLE_BOLD$package_name$STYLE_RESET" "$STYLE_BOLD$package_name$STYLE_RESET stowed."
+
+  if [ "$package_name" = "git" ]; then
+    GIT_CONFIG_DIR="$HOME/.config/git"
+    (run_command "stow -v -d '$DOTFILES_DIR/packages' -t $GIT_CONFIG_DIR $package_name") &
+    PID=$!
+  else
+    (run_command "stow -v -d '$DOTFILES_DIR/packages' -t ~ '$package_name'") &
+    PID=$!
+  fi
+
+  wait_for_process_to_finish "$PID" "Creating symlinks for $STYLE_BOLD$package_name$STYLE_RESET" "Symlinks for $STYLE_BOLD$package_name$STYLE_RESET created."
   wait "$PID"
 done
 
