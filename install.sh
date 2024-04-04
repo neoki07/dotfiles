@@ -8,7 +8,7 @@ fi
 BREW_WORK_PACKAGE_OPTIONS=("fzf" "git" "mise" "neovim" "starship")
 BREW_PERSONAL_PACKAGE_OPTIONS=("golang-migrate" "sqlc" "wasm-pack")
 
-BREW_WORK_CASK_OPTIONS=("brewlet" "figma" "gather" "notion" "orbstack" "raycast" "tableplus" "visual-studio-code" "warp")
+BREW_WORK_CASK_OPTIONS=("brewlet" "figma" "gather" "notion" "raycast" "tableplus" "visual-studio-code" "warp")
 BREW_PERSONAL_CASK_OPTIONS=("1password" "arc" "brave-browser" "brewlet" "discord" "figma" "jetbrains-toolbox" "min" "notion" "obsidian" "orbstack" "raycast" "slack" "spotify" "tableplus" "visual-studio-code" "warp")
 
 OTHER_WORK_PACKAGE_OPTIONS=("nodejs" "pnpm")
