@@ -1,7 +1,6 @@
 # Setup general settings
 alias vi="nvim"
 alias vim="nvim"
-alias code="code-insiders"
 
 setopt no_beep
 setopt auto_pushd
