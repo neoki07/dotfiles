@@ -14,7 +14,7 @@ BREW_PERSONAL_CASK_OPTIONS=("1password" "arc" "brave-browser" "brewlet" "discord
 OTHER_WORK_PACKAGE_OPTIONS=("nodejs" "pnpm")
 OTHER_PERSONAL_PACKAGE_OPTIONS=("nodejs" "pnpm" "bun" "go" "rust")
 
-VSCODE_WORK_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions"
+VSCODE_WORK_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions-work"
 VSCODE_PERSONAL_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions-personal"
 
 VSCODE_WORK_EXTENSION_OPTIONS=()
