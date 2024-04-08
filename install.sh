@@ -5,27 +5,15 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
   exit 1
 fi
 
-BREW_WORK_PACKAGE_OPTIONS=("fzf" "git" "mise" "neovim" "starship")
-BREW_PERSONAL_PACKAGE_OPTIONS=("golang-migrate" "sqlc" "wasm-pack")
+BREW_PACKAGE_OPTIONS=("golang-migrate" "sqlc" "wasm-pack")
+BREW_CASK_OPTIONS=("1password" "arc" "brave-browser" "brewlet" "discord" "figma" "jetbrains-toolbox" "min" "notion" "obsidian" "orbstack" "raycast" "slack" "spotify" "tableplus" "visual-studio-code" "warp")
+OTHER_PACKAGE_OPTIONS=("nodejs" "pnpm" "bun" "go" "rust")
 
-BREW_WORK_CASK_OPTIONS=("brewlet" "figma" "gather" "notion" "raycast" "tableplus" "visual-studio-code" "warp")
-BREW_PERSONAL_CASK_OPTIONS=("1password" "arc" "brave-browser" "brewlet" "discord" "figma" "jetbrains-toolbox" "min" "notion" "obsidian" "orbstack" "raycast" "slack" "spotify" "tableplus" "visual-studio-code" "warp")
-
-OTHER_WORK_PACKAGE_OPTIONS=("nodejs" "pnpm")
-OTHER_PERSONAL_PACKAGE_OPTIONS=("nodejs" "pnpm" "bun" "go" "rust")
-
-VSCODE_WORK_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions-work"
-VSCODE_PERSONAL_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions-personal"
-
-VSCODE_WORK_EXTENSION_OPTIONS=()
+VSCODE_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions"
+VSCODE_EXTENSION_OPTIONS=()
 while read -r line; do
-  VSCODE_WORK_EXTENSION_OPTIONS+=("$line")
-done < <(curl -s "$VSCODE_WORK_EXTENSIONS_REMOTE_FILE")
-
-VSCODE_PERSONAL_EXTENSION_OPTIONS=()
-while read -r line; do
-  VSCODE_PERSONAL_EXTENSION_OPTIONS+=("$line")
-done < <(curl -s "$VSCODE_PERSONAL_EXTENSIONS_REMOTE_FILE")
+  VSCODE_EXTENSION_OPTIONS+=("$line")
+done < <(curl -s "$VSCODE_EXTENSIONS_REMOTE_FILE")
 
 ESC=$(printf "\033")
 
@@ -616,8 +604,7 @@ while true; do
 done
 
 print_question "Which mode do you want to use for the installation?"
-# select_prompt INSTALL_MODE "Personal;Work;Custom"
-select_prompt INSTALL_MODE "Personal;Work"
+select_prompt INSTALL_MODE "Default"
 printf "\n"
 
 BREW_PACKAGES=()
@@ -625,16 +612,11 @@ BREW_CASKS=()
 OTHER_PACKAGES=()
 VSCODE_EXTENSIONS=()
 
-if [ "$INSTALL_MODE" = "Personal" ]; then
-  BREW_PACKAGES=("${BREW_PERSONAL_PACKAGE_OPTIONS[@]}")
-  BREW_CASKS=("${BREW_PERSONAL_CASK_OPTIONS[@]}")
-  OTHER_PACKAGES=("${OTHER_PERSONAL_PACKAGE_OPTIONS[@]}")
-  VSCODE_EXTENSIONS=("${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}")
-elif [ "$INSTALL_MODE" = "Work" ]; then
-  BREW_PACKAGES=("${BREW_WORK_PACKAGE_OPTIONS[@]}")
-  BREW_CASKS=("${BREW_WORK_CASK_OPTIONS[@]}")
-  OTHER_PACKAGES=("${OTHER_WORK_PACKAGE_OPTIONS[@]}")
-  VSCODE_EXTENSIONS=("${VSCODE_WORK_EXTENSION_OPTIONS[@]}")
+if [ "$INSTALL_MODE" = "Default" ]; then
+  BREW_PACKAGES=("${BREW_PACKAGE_OPTIONS[@]}")
+  BREW_CASKS=("${BREW_CASK_OPTIONS[@]}")
+  OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}")
+  VSCODE_EXTENSIONS=("${VSCODE_EXTENSION_OPTIONS[@]}")
 # elif [ "$INSTALL_MODE" = "Custom" ]; then
 #   ...
 
@@ -949,7 +931,7 @@ for extension in "${VSCODE_EXTENSIONS[@]}"; do
 done
 
 if [ "$INSTALL_MODE" = "Personal" ]; then
-  for extension in "${VSCODE_PERSONAL_EXTENSION_OPTIONS[@]}"; do
+  for extension in "${VSCODE_EXTENSION_OPTIONS[@]}"; do
     (run_command "code --install-extension '$extension'") &
     PID=$!
     wait_for_process_to_finish "$PID" "Installing $STYLE_BOLD$extension$STYLE_RESET" "$STYLE_BOLD$extension$STYLE_RESET installed."
