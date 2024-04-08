@@ -17,4 +17,5 @@
 !/vscode/extensions
 
 !README.md
+!.editorconfig
 !.gitignore
