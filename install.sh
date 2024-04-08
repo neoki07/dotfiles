@@ -617,24 +617,42 @@ if [ "$INSTALL_MODE" = "Default" ]; then
   BREW_CASKS=("${BREW_CASK_OPTIONS[@]}")
   OTHER_PACKAGES=("${OTHER_PACKAGE_OPTIONS[@]}")
   VSCODE_EXTENSIONS=("${VSCODE_EXTENSION_OPTIONS[@]}")
-# elif [ "$INSTALL_MODE" = "Custom" ]; then
-#   ...
+elif [ "$INSTALL_MODE" = "Custom" ]; then
+  BREW_PACKAGE_OPTIONS_STRING=$(
+    IFS=';'
+    echo "${BREW_PACKAGE_OPTIONS[*]}"
+  )
 
-#   print_question "Which brew packages do you want to install?"
-#   multiselect_prompt BREW_PACKAGES "$BREW_WORK_PACKAGE_OPTIONS_STRING" true
-#   printf "\n"
+  BREW_CASK_OPTIONS_STRING=$(
+    IFS=';'
+    echo "${BREW_CASK_OPTIONS[*]}"
+  )
 
-#   print_question "Which brew applications do you want to install?"
-#   multiselect_prompt BREW_CASKS "$BREW_WORK_CASK_OPTIONS_STRING" true
-#   printf "\n"
+  OTHER_PACKAGE_OPTIONS_STRING=$(
+    IFS=';'
+    echo "${OTHER_PACKAGE_OPTIONS[*]}"
+  )
 
-#   print_question "Which other packages do you want to install?"
-#   multiselect_prompt OTHER_PACKAGES "$OTHER_WORK_PACKAGE_OPTIONS_STRING" true
-#   printf "\n"
+  VSCODE_EXTENSION_OPTIONS_STRING=$(
+    IFS=';'
+    echo "${VSCODE_EXTENSION_OPTIONS[*]}"
+  )
 
-#   print_question "Which VSCode extensions do you want to install?"
-#   multiselect_prompt VSCODE_EXTENSIONS "$VSCODE_WORK_EXTENSION_OPTIONS_STRING" true
-#   printf "\n"
+  print_question "Which brew packages do you want to install?"
+  multiselect_prompt BREW_PACKAGES "$BREW_PACKAGE_OPTIONS_STRING" true
+  printf "\n"
+
+  print_question "Which brew applications do you want to install?"
+  multiselect_prompt BREW_CASKS "$BREW_CASK_OPTIONS_STRING" true
+  printf "\n"
+
+  print_question "Which other packages do you want to install?"
+  multiselect_prompt OTHER_PACKAGES "$OTHER_PACKAGE_OPTIONS_STRING" true
+  printf "\n"
+
+  print_question "Which VSCode extensions do you want to install?"
+  multiselect_prompt VSCODE_EXTENSIONS "$VSCODE_EXTENSION_OPTIONS_STRING" true
+  printf "\n"
 else
   echo "Invalid mode: $INSTALL_MODE"
   exit 1
