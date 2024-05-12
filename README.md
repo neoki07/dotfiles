@@ -7,7 +7,7 @@ There are my dotfiles for macOS.
 Run the following commands in your terminal.
 
 ```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ne-oki/dotfiles/HEAD/install.sh)"
 ```
 
 ## Overview
