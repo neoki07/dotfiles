@@ -9,7 +9,7 @@ BREW_PACKAGE_OPTIONS=("golang-migrate" "sqlc" "wasm-pack")
 BREW_CASK_OPTIONS=("1password" "arc" "brave-browser" "brewlet" "discord" "figma" "jetbrains-toolbox" "min" "notion" "obsidian" "orbstack" "raycast" "slack" "spotify" "tableplus" "visual-studio-code" "warp")
 OTHER_PACKAGE_OPTIONS=("nodejs" "pnpm" "bun" "go" "rust")
 
-VSCODE_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/ne-oki/dotfiles/HEAD/vscode/extensions"
+VSCODE_EXTENSIONS_REMOTE_FILE="https://raw.githubusercontent.com/neokidev/dotfiles/HEAD/vscode/extensions"
 VSCODE_EXTENSION_OPTIONS=()
 while read -r line; do
   VSCODE_EXTENSION_OPTIONS+=("$line")
@@ -701,7 +701,7 @@ DOTFILES_DIR="$DOTFILES_PARENT_DIR/dotfiles"
 if [ -d "$DOTFILES_DIR" ]; then
   print_info "The dotfiles already cloned."
 else
-  (GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" "${GH_COMMAND_PATH}" repo clone ne-oki/dotfiles "$DOTFILES_DIR") &
+  (GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" "${GH_COMMAND_PATH}" repo clone neokidev/dotfiles "$DOTFILES_DIR") &
   PID=$!
   wait_for_process_to_finish "$PID" "Cloning dotfiles" "Dotfiles cloned."
   wait "$PID"
