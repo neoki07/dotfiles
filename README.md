@@ -50,7 +50,9 @@ Run the following commands in your terminal.
 
 ## TODO
 
-- [ ] Disable spotlight shortcuts
-- [ ] Switch caps lock and control keys
 - [ ] Write to README.md about how to import Raycast settings
+- [ ] Remove password from Raycast settings
+- [ ] Remove code-insiders alias
 - [ ] Brave extensions
+- [ ] Caps lock と Control の入れ替えが、再起動後は効いていない?
+- [ ] Chrome extensions

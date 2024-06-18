@@ -1,6 +1,7 @@
 # Setup general settings
 alias vi="nvim"
 alias vim="nvim"
+alias gb="gibra"
 
 setopt no_beep
 setopt auto_pushd
@@ -38,3 +39,5 @@ export PATH=$PATH:$GOPATH/bin
 if [ -f ~/.ssh/.ssh-agent ]; then
     source ~/.ssh/.ssh-agent
 fi
+
+export LIBRARY_PATH="$LIBRARY_PATH:$(brew --prefix)/lib"
