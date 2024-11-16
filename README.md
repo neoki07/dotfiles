@@ -54,5 +54,4 @@ Run the following commands in your terminal.
 - [ ] Remove password from Raycast settings
 - [ ] Remove code-insiders alias
 - [ ] Brave extensions
-- [ ] Caps lock と Control の入れ替えが、再起動後は効いていない?
 - [ ] Chrome extensions
